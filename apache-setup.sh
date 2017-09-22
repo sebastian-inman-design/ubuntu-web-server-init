@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 serverip=$(ifconfig eth0 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1)
 
