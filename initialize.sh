@@ -3,14 +3,19 @@
 ADMINNAME="Sebastian Inman"
 ADMINEMAIL="sebastian.inman@highwayproducts.com"
 
-IPADDRESS=$(ifconfig eth0 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1)
+IPADDRESS=""
 DOMAIN=""
 
 Initialize() {
   # initilize the script
   UpdatePackages
+  # install the cURL package
+  sudo apt install curl -y
+  # fetch the server IP address
+  $IPADDRESS=$(curl http://icanhazip.com)
+
   while true; do
-    read -p "Install system package upgrades? [Y/N]? " PROMPT 
+    read -p "Install system package upgrades? [Y/N]? " PROMPT
     case $PROMPT in
       [Yy]* ) UpgradePackages; InstallWebServer;;
       [Nn]* ) InstallWebServer;;
