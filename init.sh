@@ -8,22 +8,19 @@ echo "==================================================="
 echo "                                                   "
 echo "                                                   "
 
-echo "Please select which web server you would like to configure:"
 
-select SERVER in apache nginx cancel
-do
-  case $SERVER in
-    apache)
-      echo "install apache..."
-    ;;
-    nginx)
-      echo "install nginx..."
-    ;;
-    cancel)
-      break
-    ;;
+PS3='Please select which web server you would like to configure:'
+select SERVER in apache nginx cancel; do
+  case "$SERVER" in
+    "apache")
+      echo "install apache..." ;;
+    "nginx")
+      echo "install nginx..." ;;
+    "cancel")
+      break ;;
   esac
 done
+
 
 UpdatePackages() {
   echo "Please wait while the package list is updated..."
