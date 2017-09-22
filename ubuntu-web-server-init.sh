@@ -23,7 +23,7 @@ UpgradePackages() {
 
 ChooseServer() {
   PS3="Please select which web server to install: "
-  options=("Apache", "Nginx")
+  options=("Apache" "Nginx")
   select opt in "${options[@]}"
   do
     case $opt in
