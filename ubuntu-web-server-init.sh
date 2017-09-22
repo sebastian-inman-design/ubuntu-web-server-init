@@ -24,15 +24,15 @@ UpgradePackages() {
 ChooseServer() {
   PS3="Please select which web server to install: "
   options=("Apache" "Nginx")
-  select opt in "${options[@]}"
-  do
-    case $opt in
-      "Apache")
-        echo "you chose to install apache"
-        ;;
-      "Nginx")
-        echo "you chose to install nginx"
-        ;;
+  select opt in "${options[@]}" "Quit"; do
+    case "$REPLY" in
+      1 ) echo "You picked $opt which is option $REPLY";;
+      2 ) echo "You picked $opt which is option $REPLY";;
+      3 ) echo "You picked $opt which is option $REPLY";;
+
+      $(( ${#options[@]}+1 )) ) echo "Goodbye!"; break;;
+      *) echo "Invalid option. Try another one."; continue;;
+
     esac
   done
 }
