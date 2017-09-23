@@ -47,7 +47,7 @@ RemovePackages() {
 
 ConfigureDomain() {
   # add domain to the hosts file
-  echo "$IPADDRESS $2" >> /etc/hosts
+  sudo echo "$IPADDRESS $2" >> /etc/hosts
   # remove the default web directory
   sudo rm -rf /var/www/html
   # create the domain web directory
@@ -190,7 +190,7 @@ InstallLetsEncrypt() {
     # update packages
     UpdatePackages
     # install the certbot package
-    sudo apt install python-certbot-apache
+    sudo apt install python-certbot-apache -y
     # install ssl certificate
     sudo certbot --apache -d $2
   fi
@@ -198,7 +198,7 @@ InstallLetsEncrypt() {
     # update packages
     UpdatePackages
     # install the certbot package
-    sudo apt install python-certbot-nginx
+    sudo apt install python-certbot-nginx -y
     # install ssl certificate
     sudo certbot --nginx -d $2
     # update the diffie-hellman parameters
