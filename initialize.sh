@@ -66,6 +66,9 @@ ConfigureDomain() {
 }
 
 InstallWebServer() {
+  InstallPHP
+  InstallMySQL
+  InstallPHPMyAdmin
   PS3="Select a web server to configure: "
   select SERVER in "Apache Web Server" "Nginx Web Server" "Cancel"; do
     case "$SERVER" in
