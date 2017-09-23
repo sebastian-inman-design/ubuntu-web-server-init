@@ -17,7 +17,7 @@ Initialize() {
   while true; do
     read -p "Install system package upgrades? [Y/N]? " PROMPT
     case $PROMPT in
-      [Yy]* ) UpgradePackages; InstallWebServer;;
+      [Yy]* ) UpgradePackages;;
       [Nn]* ) InstallWebServer;;
     esac
   done
@@ -25,12 +25,19 @@ Initialize() {
 
 UpdatePackages() {
   echo "checking system for updates..."
-  # sudo apt update
+  sudo apt update
 }
 
 UpgradePackages() {
   echo "installing system package upgrades..."
-  # sudo apt upgrade -y
+  sudo apt upgrade -y
+  while true; do
+    read -p "Remove unused system packages? [Y/N]? " PROMPT
+    case $PROMPT in
+      [Yy]* ) RemovePackages; InstallWebServer;;
+      [Nn]* ) InstallWebServer;;
+    esac
+  done
 }
 
 RemovePackages() {
@@ -63,9 +70,9 @@ InstallWebServer() {
   select SERVER in "Apache Web Server" "Nginx Web Server" "Cancel"; do
     case "$SERVER" in
       "Apache Web Server")
-        echo "installing the apache web server...";;
+        InstallApache;;
       "Nginx Web Server")
-        echo "installing the nginx web server...";;
+        InstallNginx;;
       "Cancel")
         break;;
     esac
@@ -81,6 +88,10 @@ InstallApache() {
   sudo ufw allow "Apache Full"
   # install the Apache PHP module
   sudo apt install libapache2-mod-php7.0 -y
+  while true; do
+    read -p "Enter the domain for this server: " PROMPT
+    ConfigureDomain "apache" $PROMPT
+  done
 }
 
 InstallNginx() {
@@ -90,6 +101,10 @@ InstallNginx() {
   sudo apt install nginx -y
   # update the firewall
   sudo ufw allow "Nginx Full"
+  while true; do
+    read -p "Enter the domain for this server: " PROMPT
+    ConfigureDomain "nginx" $PROMPT
+  done
 }
 
 ConfigureApache() {
