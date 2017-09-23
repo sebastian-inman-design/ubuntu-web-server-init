@@ -9,8 +9,10 @@ DOMAIN=""
 Initialize() {
   # initilize the script
   UpdatePackages
+  echo "fetching server IP address..."
   # fetch the server IP address
   IPADDRESS=$(curl http://icanhazip.com)
+  echo "server IP address is $IPADDRESS"
 
   while true; do
     read -p "Install system package upgrades? [Y/N]? " PROMPT
