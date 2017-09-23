@@ -9,10 +9,8 @@ DOMAIN=""
 Initialize() {
   # initilize the script
   UpdatePackages
-  # install the cURL package
-  sudo apt install curl -y
   # fetch the server IP address
-  $IPADDRESS=$(curl http://icanhazip.com)
+  IPADDRESS=$(curl http://icanhazip.com)
 
   while true; do
     read -p "Install system package upgrades? [Y/N]? " PROMPT
