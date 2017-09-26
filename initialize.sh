@@ -186,17 +186,15 @@ InstallPHPMyAdmin() {
 InstallLetsEncrypt() {
   # add certbot repository
   sudo add-apt-repository ppa:certbot/certbot
+  # update packages
+  UpdatePackages
   if [ $1 = "apache" ]; then
-    # update packages
-    UpdatePackages
     # install the certbot package
     sudo apt install python-certbot-apache -y
     # install ssl certificate
     sudo certbot --apache -d $2
   fi
   if [ $1 = "nginx" ]; then
-    # update packages
-    UpdatePackages
     # install the certbot package
     sudo apt install python-certbot-nginx -y
     # install ssl certificate
