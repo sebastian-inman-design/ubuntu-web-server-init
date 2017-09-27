@@ -241,7 +241,7 @@ sudo apt install mysql-server -y
 sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/mysql.txt
 sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/mysql.txt
 sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/mysql.txt
-mysql -u$DBUSERNAME -p$DBPASSWORD < mysql.txt
+mysql --verbose -u$DBUSERNAME -p$DBPASSWORD < mysql.txt
 
 
 # 33. INSTALL PHPMyAdmin
