@@ -6,6 +6,7 @@ SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
 IPADDRESS=$(curl http://icanhazip.com)
+WPSALTS=$(curl https://api.wordpress.org/secret-key/1.1/salt/)
 
 DEFAULT_URL="fbguesswho.com"
 DEFAULT_EMAIL="sebastian@seedscs.com"
@@ -263,9 +264,20 @@ sudo mv -v /home/$USERNAME/wordpress/* /home/$USERNAME/$SITEURL/public
 sudo rm -rf /home/$USERNAME/wordpress
 
 
+# 35. CONFIGURE the WordPress install
+sudo mv -v $SCRIPTPATH/wp-config.php /home/$USERNAME/$SIREURL/public/wp-config.php
+sudo sed -i "s/temp_salts/$WPSALTS/g" home/$USERNAME/$SIREURL/public/wp-config.php
+sudo sed -i "s/temp_dbname/$DBNAME/g" home/$USERNAME/$SIREURL/public/wp-config.php
+sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" home/$USERNAME/$SIREURL/public/wp-config.php
+sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" home/$USERNAME/$SIREURL/public/wp-config.php
+
+
 # 35. REPLACE WordPress branding with custom branding
-sudo mv -v $SCRIPTPATH/branding.png /home/$USERNAME/$SITEURL/public/wp-admin/images/branding.png
-sudo sed -i "s/wordpress-logo.svg/branding.png/g" home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
+# sudo mv -v $SCRIPTPATH/branding.png /home/$USERNAME/$SITEURL/public/wp-admin/images/branding.png
+# sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.css
+# sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.css
+# sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
+# sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
 
 
 # 36. INSTALL Redis caching
