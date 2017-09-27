@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO 1. Prompt for username, password, and server domain
+
 SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
@@ -270,8 +272,14 @@ sudo service nginx restart
 curl -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
 
 
-# 33. INSTALL the WordPress download
-unzip /home/$USERNAME/wordpress.zip -d /home/$USERNAME/$SITEURL/public
+# 33. UNZIP the WordPress download
+unzip /home/$USERNAME/wordpress.zip -d /home/$USERNAME/
+sudo rm /home/$USERNAME/wordpress.zip
+
+
+# 34. INSTALL the WordPress download
+sudo mv -v /home/$USERNAME/wordpress/* /home/$USERNAME/$SITEURL/public
+sudo rm -rf /home/$USERNAME/wordpress
 
 
 # 36. INSTALL Redis caching
