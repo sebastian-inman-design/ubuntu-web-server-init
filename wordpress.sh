@@ -21,90 +21,112 @@ WPEMAIL=$DEFAULT_EMAIL
 WPUSERNAME=$DEFAULT_USERNAME
 WPPASSWORD=$DEFAULT_PASSWORD
 
+
 # 1. UPDATE server hostname
+echo "Updating the server hostname: $SITEURL"
 echo $SITEURL > /etc/hostname
 
 
 # 2. CONFIGURE timezone
-dpkg-reconfigure tzdata
+echo "Configuring the server timezone..."
+echo "America/Los_Angeles" > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
 
 
 # 3. UPDATE packages
+echo "Updating server packages..."
 sudo apt update
 
 
 # 4. UPGRADE packages
+echo "Installing package updates..."
 sudo apt upgrade -y
 
 
 # 5. REMOVE old packages
+echo "Removing out of date packages..."
 sudo apt autoremove -y
 
 
 # 6. INSTALL common packages
-sudo apt install software-properties-common
+echo "Installing common server packages..."
+sudo apt install software-properties-common -y
 
 
 # 7. CREATE new server user
-sudo adduser $USERNAME --disabled-password
+echo "Creating new system user: $USERNAME..."
+sudo adduser --disabled-password --gecos "" $USERNAME
 echo "$USERNAME:$PASSWORD" | sudo chpasswd
 
 
 # 8. add user to sudo group
+echo "Adding $USERNAME to sudo group..."
 sudo usermod -aG sudo $USERNAME
 
 
 # 9. DISABLE root login via SSH
+echo "Disabling root login to server..."
 sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 
 
 # 10. RESTART the SSH server
+echo "Restarting the SSH server..."
 sudo service ssh restart
 
 
 # 11. INSTALL UFW firewall
+echo "Installing the UFW firewall package..."
 sudo apt install ufw -y
 
 
 # 12. UPDATE firewalls
+echo "Updating allowed UFW ports..."
 sudo ufw allow ssh
 sudo ufw allow http
 sudo ufw allow https
 
 
 # 13. ENABLE the UFW firewall
-sudo ufw enable
+echo "Starting the UFW firewall service..."
+echo "y" | sudo ufw enable
 
 
 # 14. INSTALL Fail2Ban
+echo "Installing the Fail2Ban package..."
 sudo apt install fail2ban -y
 
 
 # 15. START Fail2Ban
+echo "Starting the Fail2Ban service..."
 sudo service fail2ban start
 
 
 # 16. INSTALL Nginx
+echo "Installing current Nginx package..."
 sudo add-apt-repository ppa:nginx/development -y
 sudo apt update
 sudo apt install nginx -y
 
 
 # 18. ENABLE PHP to load in Nginx
+echo "Setting up Nginx PHP params..."
 sudo echo "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;" >> /etc/nginx/fastcgi_params
 
 
 # 19. RESTART the Nginx web server
+echo "Restarting Nginx web server..."
 sudo service nginx restart
 
 
 # 20. INSTALL latest version of PHP and modules
+echo "Installing current PHP package and PHP modules..."
 sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update
 sudo apt install php7.1-fpm php7.1-common php7.1-mysqlnd php7.1-xmlrpc php7.1-curl php7.1-gd php7.1-imagick php7.1-cli php-pear php7.1-dev php7.1-imap php7.1-mcrypt -y
 
 
 # 21. CONFIGURE PHP owners and groups
+echo "Configuring PHP owners and groups..."
 sudo sed -i "s/user = www-data/user = $USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
 sudo sed -i "s/group = www-data/group = $USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
 sudo sed -i "s/listen.owner = www-data/listen.owner = $USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
@@ -112,15 +134,18 @@ sudo sed -i "s/listen.group = www-data/listen.group = $USERNAME/g" /etc/php/7.1/
 
 
 # 22. CONFIGURE PHP upload sizes
+echo "Configuring PHP upload sizes..."
 sudo sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/g" /etc/php/7.1/fpm/php.ini
 sudo sed -i "s/post_max_size = 8M/post_max_size = 64M/g" /etc/php/7.1/fpm/php.ini
 
 
 # 23. RESTART PHP service
+echo "Restarting the PHP service..."
 sudo service php7.1-fpm restart
 
 
 # 24. INSTALL MariaDB
+echo "Installing the MariaDB package..."
 sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 sudo add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.nodesdirect.com/mariadb/repo/10.1/ubuntu xenial main" -y
 sudo apt update
