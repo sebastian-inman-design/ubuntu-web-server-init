@@ -19,7 +19,7 @@ SITEURL=$DEFAULT_URL
 SITETITLE=$SEED_TITLE
 SITEADMIN=$DEFAULT_EMAIL
 
-DBNAME="website"
+DBNAME="wordpress"
 DBUSERNAME=$DEFAULT_USERNAME
 DBPASSWORD=$DEFAULT_PASSWORD
 
@@ -230,42 +230,24 @@ sudo service nginx restart
 
 
 # 24. INSTALL MySQL
-# echo "Installing the MySQL package..."
-# echo "mysql-server mysql-server/root_password password $DBPASSWORD" | sudo debconf-set-selections
-# echo "mysql-server mysql-server/root_password_again password $DBPASSWORD" | sudo debconf-set-selections
-# sudo apt update
-# sudo apt install mysql-server -y
-
-
-# 25. CONFIGURE MySQL with mysql_secure_installation
-# SECURE_MYSQL=$(expect -c "
-# set timeout 10
-# spawn mysql_secure_installation
-# expect \"Enter current password for root (enter for none):\"
-# send \"$DBPASSWORD\r\"
-# expect \"Change the root password?\"
-# send \"n\r\"
-# expect \"Remove anonymous users?\"
-# send \"y\r\"
-# expect \"Disallow root login remotely?\"
-# send \"y\r\"
-# expect \"Remove test database and access to it?\"
-# send \"y\r\"
-# expect \"Reload privilege tables now?\"
-# send \"y\r\"
-# expect eof
-# ")
-
-# echo "$SECURE_MYSQL"
-# sudo purge expect -y
+echo "Installing the MySQL package..."
+sudo apt update
+echo "mysql-server mysql-server/root_password password $DBPASSWORD" | sudo debconf-set-selections
+echo "mysql-server mysql-server/root_password_again password $DBPASSWORD" | sudo debconf-set-selections
+sudo apt install mysql-server -y
 
 
 # 32. CREATE and CONFIGURE the new database
-# mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "CREATE DATABASE $DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;"
-# mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "CREATE USER '$DBUSERNAME'@'localhost' IDENTIFIED BY '$DBPASSWORD';"
-# mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSERNAME'@'localhost';"
-# mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "GRANT SELECT, INSERT, UPDATE, DELETE ON $DBNAME.* TO '$DBUSERNAME'@'localhost';"
-# mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "FLUSH PRIVILEGES;"
+mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "CREATE DATABASE $DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;"
+mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "CREATE USER '$DBUSERNAME'@'localhost' IDENTIFIED BY '$DBPASSWORD';"
+mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSERNAME'@'localhost';"
+mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "GRANT SELECT, INSERT, UPDATE, DELETE ON $DBNAME.* TO '$DBUSERNAME'@'localhost';"
+mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "FLUSH PRIVILEGES;"
+
+
+# 33. INSTALL PHPMyAdmin
+# sudo apt update
+# sudo apt install phpmyadmin -y
 
 
 # 32. DOWNLOAD the latest version of WordPress
