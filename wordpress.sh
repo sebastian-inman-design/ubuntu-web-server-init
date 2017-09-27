@@ -264,8 +264,8 @@ sudo rm -rf /home/$USERNAME/wordpress
 
 
 # 35. CONFIGURE the WordPress install
-WPSALT=$(curl https://api.wordpress.org/secret-key/1.1/salt/)
-sudo sed -i "s/temp_wpsalt/$WPSALT/g" $SCRIPTPATH/wp-config.php
+# WPSALT=$(curl https://api.wordpress.org/secret-key/1.1/salt/)
+# sudo sed -i "s/temp_wpsalt/$WPSALT/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/wp-config.php
