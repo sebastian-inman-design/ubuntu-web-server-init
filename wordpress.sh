@@ -10,7 +10,7 @@ IPADDRESS=$(curl http://icanhazip.com)
 DEFAULT_URL="fbguesswho.com"
 DEFAULT_EMAIL="sebastian@seedscs.com"
 DEFAULT_USERNAME="sebastian"
-DEFAULT_PASSWORD="7jfH80!?xxX"
+DEFAULT_PASSWORD="pa55word1"
 
 USERNAME=$DEFAULT_USERNAME
 PASSWORD=$DEFAULT_PASSWORD
@@ -91,7 +91,7 @@ sudo mkdir -p /home/$USERNAME
 
 
 # 10. SET ownership of user home directory
-# sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
+sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 
 # 9. DISABLE root login via SSH
@@ -238,10 +238,10 @@ sudo apt install mysql-server -y
 
 
 # 32. CREATE and CONFIGURE the new database
-sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/mysql.txt
-sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/mysql.txt
-sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/mysql.txt
-mysql --verbose -u$DBUSERNAME -p$DBPASSWORD < mysql.txt
+sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/mysql.sql
+sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/mysql.sql
+sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/mysql.sql
+mysql --verbose -u $DBUSERNAME -p$DBPASSWORD < $SCRIPTPATH/mysql.sql
 
 
 # 33. INSTALL PHPMyAdmin
