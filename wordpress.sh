@@ -3,6 +3,8 @@
 SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
+IPADDRESS=$(curl http://icanhazip.com)
+
 DEFAULT_URL="fbguesswho.com"
 DEFAULT_EMAIL="sebastian@seedscs.com"
 DEFAULT_USERNAME="sebastian"
@@ -57,6 +59,12 @@ sudo apt autoremove -y
 # 6. INSTALL common packages
 echo "Installing common server packages..."
 sudo apt install software-properties-common -y
+
+
+# 7. INSTALL unzip package
+echo "Installing the unzip package..."
+sudo apt update
+sudo apt install unzip -y
 
 
 # 7. INSTALL Expect package
@@ -206,6 +214,7 @@ sudo mv $SCRIPTPATH/favicon.ico /home/$USERNAME/$SITEURL/public/favicon.ico
 # 29. CREATE new Nginx block config file
 echo "Creating new Nginx server block config file..."
 sudo mv $SCRIPTPATH/server-block.conf /etc/nginx/sites-available/$SITEURL
+sudo sed -i "s/ipaddress/$IPADDRESS/g" /etc/nginx/sites-available/$SIREURL
 sudo sed -i "s/temp_siteurl/$SITEURL/g" /etc/nginx/sites-available/$SITEURL
 sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/sites-available/$SITEURL
 
@@ -257,23 +266,12 @@ sudo service nginx restart
 # mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "FLUSH PRIVILEGES;"
 
 
-# 32. DOWNLOAD the wp-cli package
-curl -o /home/$USERNAME/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-php /home/$USERNAME/wp-cli.phar --info
-sudo chmod +x /home/$USERNAME/wp-cli.phar
-sudo mv /home/$USERNAME/wp-cli.phar /usr/local/bin/wp
+# 32. DOWNLOAD the latest version of WordPress
+curl -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
 
 
-# 33. DOWNLOAD WordPress into the domain directory
-sudo -u $USERNAME -i -- wp --allow-root core download --locale=en_UK --path=/home/$USERNAME/$SITEURL/public
-
-
-# 34. CONFIGURE the new WordPress installation
-# sudo -u $USERNAME -i -- wp core config --dbname=$DBNAME --dbuser=$DBUSERNAME --dbpass=$DBPASSWORD
-
-
-# 35. INSTALL WordPress
-# sudo -u $USERNAME -i -- wp core install --url=$SITEURL --title=$SITETITLE --admin_user=$WPUSERNAME --admin_email=$WPEMAIL --admin_password=$WPPASSWORD
+# 33. INSTALL the WordPress download
+unzip /home/$USERNAME/wordpress.zip -d /home/$USERNAME/$SITEURL/public
 
 
 # 36. INSTALL Redis caching
