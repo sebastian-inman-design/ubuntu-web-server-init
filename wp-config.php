@@ -46,7 +46,8 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-temp_salts
+
+temp_wpsalt
 
 /**#@-*/
 

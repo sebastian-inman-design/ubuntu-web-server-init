@@ -6,7 +6,6 @@ SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
 IPADDRESS=$(curl http://icanhazip.com)
-WPSALTS=$(curl https://api.wordpress.org/secret-key/1.1/salt/)
 
 DEFAULT_URL="fbguesswho.com"
 DEFAULT_EMAIL="sebastian@seedscs.com"
@@ -265,7 +264,8 @@ sudo rm -rf /home/$USERNAME/wordpress
 
 
 # 35. CONFIGURE the WordPress install
-sudo sed -i "s/temp_salts/$WPSALTS/g" $SCRIPTPATH/wp-config.php
+WPSALT=$(curl https://api.wordpress.org/secret-key/1.1/salt/)
+sudo sed -i "s/temp_wpsalt/$WPSALT/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/wp-config.php
