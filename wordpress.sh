@@ -253,8 +253,7 @@ sudo service nginx restart
 
 
 # 32. DOWNLOAD the wp-cli package
-cd /home/$USERNAME
-curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+curl -o /home/$USERNAME/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 php /home/$USERNAME/wp-cli.phar --info
 sudo chmod +x /home/$USERNAME/wp-cli.phar
 sudo mv /home/$USERNAME/wp-cli.phar /usr/local/bin/wp
@@ -262,7 +261,7 @@ sudo mv /home/$USERNAME/wp-cli.phar /usr/local/bin/wp
 
 # 33. DOWNLOAD WordPress into the domain directory
 cd /home/$USERNAME/$SITEURL/public
-sudo -u $USERNAME -i -- wp --allow-root core download --locale=sv_SE
+sudo -u $USERNAME -i -- wp --allow-root core download --locale=sv_SE --path=/home/$USERNAME/$SITEURL/public
 
 
 # 34. CONFIGURE the new WordPress installation
