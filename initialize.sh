@@ -46,6 +46,9 @@ RemovePackages() {
 }
 
 ConfigureDomain() {
+  # update server hostname
+  echo "$2" > /etc/hostname
+  hostname -F /etc/hostname
   # add domain to the hosts file
   sudo echo "$IPADDRESS $2" >> /etc/hosts
   # remove the default web directory
