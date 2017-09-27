@@ -8,8 +8,6 @@
 SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
-IPADDRESS=$(curl http://icanhazip.com)
-
 DEFAULT_URL="fbguesswho.com"
 DEFAULT_EMAIL="sebastian@seedscs.com"
 DEFAULT_USERNAME="sebastian"
@@ -220,8 +218,9 @@ sudo mv $SCRIPTPATH/favicon.ico /home/$USERNAME/$SITEURL/public/favicon.ico
 
 # 29. CREATE new Nginx block config file
 echo "Creating new Nginx server block config file..."
+IPADDRESS=$(curl http://icanhazip.com)
 sudo mv $SCRIPTPATH/server-block.conf /etc/nginx/sites-available/$SITEURL
-sudo sed -i "s/ipaddress/$IPADDRESS/g" /etc/nginx/sites-available/$SIREURL
+sudo sed -i "s/temp_ipaddress/$IPADDRESS/g" /etc/nginx/sites-available/$SIREURL
 sudo sed -i "s/temp_siteurl/$SITEURL/g" /etc/nginx/sites-available/$SITEURL
 sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/sites-available/$SITEURL
 
