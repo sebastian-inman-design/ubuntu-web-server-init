@@ -1,3 +1,5 @@
+#!/bin/bash
+
 SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
@@ -74,7 +76,7 @@ sudo usermod -aG sudo $USERNAME
 
 
 # 9. switch to the new user
-echo $PASSWORD | sudo su $USERNAME
+echo sudo su $USERNAME
 
 
 # 9. DISABLE root login via SSH
