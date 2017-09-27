@@ -152,6 +152,10 @@ sudo apt update
 sudo apt install mariadb-server libmariadbclient-dev libmariadbd-dev -y
 
 
+echo "Deleting MySQL Aria log..."
+sudo rm /var/lib/mysql/aria_log_control
+
+
 # 25. CONFIGURE default system database tables
 echo "Configuring MariaDB..."
 sudo mysql_install_db
