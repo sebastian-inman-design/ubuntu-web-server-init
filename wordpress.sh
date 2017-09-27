@@ -263,6 +263,11 @@ sudo mv -v /home/$USERNAME/wordpress/* /home/$USERNAME/$SITEURL/public
 sudo rm -rf /home/$USERNAME/wordpress
 
 
+# 35. REPLACE WordPress branding with custom branding
+sudo mv -v $SCRIPTPATH/branding.png /home/$USERNAME/$SITEURL/public/wp-admin/images/branding.png
+sudo sed -i "s/wordpress-logo.svg/branding.png/g" home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
+
+
 # 36. INSTALL Redis caching
 sudo apt update
 sudo apt install redis-server php-redis -y
