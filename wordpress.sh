@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # TODO 1. Prompt for username, password, and server domain
+# TODO 2. Move WordPress plugins into wp-content folder after install
+# TODO 3. Install SSL certificates for HTTPS connection
+# TODO 4. Install HTTP2 server connections
 
 SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
@@ -227,8 +230,22 @@ sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/sites-available/$SITEURL
 sudo ln -s /etc/nginx/sites-available/$SITEURL /etc/nginx/sites-enabled/$SITEURL
 
 
+# 33. INSTALL LetsEncrypt package
+sudo apt update
+sudo apt install letsencrypt -y
+
+
+# 34. CONFIGURE SSL certificate for domain
+sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITEURL/public -d $SITEURL
+
+
 # 31. RERSTART the Nginx web server
 sudo service nginx restart
+
+
+# 36. AUTO renew SSL certificates
+CRONRENEWSSL="0 0,12 * * * letsencrypt renew >/dev/null 2>&1"
+(crontab -u $USERNAME -l; echo "$CRONRENEWSSL" ) | crontab -u $USERNAME -
 
 
 # 24. INSTALL MySQL
