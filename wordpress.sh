@@ -3,7 +3,7 @@
 SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
-DEFAULT_URL="website.com"
+DEFAULT_URL="fbguesswho.com"
 DEFAULT_EMAIL="sebastian@seedscs.com"
 DEFAULT_USERNAME="sebastian"
 DEFAULT_PASSWORD="7jfH80!?xxX"
