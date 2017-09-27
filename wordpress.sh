@@ -199,6 +199,10 @@ sudo touch /home/$USERNAME/$SITEURL/logs/error.log
 sudo chmod -R 755 /home/$USERNAME/$SITEURL
 
 
+# 30. MOVE the favicon to the web directory
+sudo mv $SCRIPTPATH/favicon.ico /home/$USERNAME/$SITEURL/public/favicon.ico
+
+
 # 29. CREATE new Nginx block config file
 echo "Creating new Nginx server block config file..."
 sudo mv $SCRIPTPATH/server-block.conf /etc/nginx/sites-available/$SITEURL
