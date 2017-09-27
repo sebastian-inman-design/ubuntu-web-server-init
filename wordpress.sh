@@ -265,7 +265,7 @@ sudo rm -rf /home/$USERNAME/wordpress
 
 
 # 35. CONFIGURE the WordPress install
-sudo mv -v $SCRIPTPATH/wp-config.php /home/$USERNAME/$SIREURL/public/wp-config.php
+sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SIREURL/public/wp-config.php
 sudo sed -i "s/temp_salts/$WPSALTS/g" home/$USERNAME/$SIREURL/public/wp-config.php
 sudo sed -i "s/temp_dbname/$DBNAME/g" home/$USERNAME/$SIREURL/public/wp-config.php
 sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" home/$USERNAME/$SIREURL/public/wp-config.php
@@ -292,4 +292,4 @@ sudo service redis-server restart
 sudo service php7.1-fpm restart
 
 # 36. SELF DESTRUCT
-sudo rm -rf $SCRIPTPATH
+# sudo rm -rf $SCRIPTPATH
