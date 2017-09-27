@@ -30,6 +30,7 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 # 1. UPDATE server hostname
 echo "Updating the server hostname: $SITEURL"
 echo $SITEURL > /etc/hostname
+hostname -F /etc/hostname
 
 
 # 2. CONFIGURE timezone
@@ -80,7 +81,7 @@ sudo mkdir -p /home/$USERNAME
 
 
 # 10. SET ownership of user home directory
-sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
+# sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 
 # 9. DISABLE root login via SSH
@@ -260,16 +261,15 @@ sudo mv /home/$USERNAME/wp-cli.phar /usr/local/bin/wp
 
 
 # 33. DOWNLOAD WordPress into the domain directory
-cd /home/$USERNAME/$SITEURL/public
-sudo -u $USERNAME -i -- wp --allow-root core download --locale=sv_SE --path=/home/$USERNAME/$SITEURL/public
+sudo -u $USERNAME -i -- wp --allow-root core download --locale=en_UK --path=/home/$USERNAME/$SITEURL/public
 
 
 # 34. CONFIGURE the new WordPress installation
-sudo -u $USERNAME -i -- wp core config --dbname=$DBNAME --dbuser=$DBUSERNAME --dbpass=$DBPASSWORD
+# sudo -u $USERNAME -i -- wp core config --dbname=$DBNAME --dbuser=$DBUSERNAME --dbpass=$DBPASSWORD
 
 
 # 35. INSTALL WordPress
-sudo -u $USERNAME -i -- wp core install --url=$SITEURL --title=$SITETITLE --admin_user=$WPUSERNAME --admin_email=$WPEMAIL --admin_password=$WPPASSWORD
+# sudo -u $USERNAME -i -- wp core install --url=$SITEURL --title=$SITETITLE --admin_user=$WPUSERNAME --admin_email=$WPEMAIL --admin_password=$WPPASSWORD
 
 
 # 36. INSTALL Redis caching
