@@ -53,6 +53,12 @@ echo "Installing common server packages..."
 sudo apt install software-properties-common -y
 
 
+# 7. INSTALL Expect package
+echo "Installing the Expect package..."
+sudo apt update
+sudo apt install expect -y
+
+
 # 7. CREATE new server user
 echo "Creating new system user: $USERNAME..."
 sudo adduser --disabled-password --gecos "" $USERNAME
@@ -76,6 +82,7 @@ sudo service ssh restart
 
 # 11. INSTALL UFW firewall
 echo "Installing the UFW firewall package..."
+sudo apt update
 sudo apt install ufw -y
 
 
@@ -93,6 +100,7 @@ echo "y" | sudo ufw enable
 
 # 14. INSTALL Fail2Ban
 echo "Installing the Fail2Ban package..."
+sudo apt update
 sudo apt install fail2ban -y
 
 
@@ -144,22 +152,35 @@ echo "Restarting the PHP service..."
 sudo service php7.1-fpm restart
 
 
-# 24. INSTALL MariaDB
-echo "Installing the MariaDB package..."
-sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-sudo add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.nodesdirect.com/mariadb/repo/10.1/ubuntu xenial main" -y
+# 24. INSTALL MySQL
+echo "Installing the MySQL package..."
+echo "mysql-server mysql-server/root_password password $DBPASSWORD" | sudo debconf-set-selections
+echo "mysql-server mysql-server/root_password_again password $DBPASSWORD" | sudo debconf-set-selections
 sudo apt update
-sudo apt install mariadb-server libmariadbclient-dev libmariadbd-dev -y
+sudo apt install mysql-server -y
 
 
-echo "Deleting MySQL Aria log..."
-sudo rm /var/lib/mysql/aria_log_control
+# 25. CONFIGURE MySQL with mysql_secure_installation
+SECURE_MYSQL=$(expect -c "
+set timeout 10
+spawn mysql_secure_installation
+expect \"Enter current password for root (enter for none):\"
+send \"$DBPASSWORD\r\"
+expect \"Change the root password?\"
+send \"n\r\"
+expect \"Remove anonymous users?\"
+send \"y\r\"
+expect \"Disallow root login remotely?\"
+send \"y\r\"
+expect \"Remove test database and access to it?\"
+send \"y\r\"
+expect \"Reload privilege tables now?\"
+send \"y\r\"
+expect eof
+")
 
-
-# 25. CONFIGURE default system database tables
-echo "Configuring MariaDB..."
-sudo mysql_install_db
-# sudo mysql_secure_installation
+echo "$SECURE_MYSQL"
+sudo purge expect -y
 
 
 # 26. CONFIGURE a "catch-all" server block
