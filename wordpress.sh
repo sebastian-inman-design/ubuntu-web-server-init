@@ -194,6 +194,7 @@ sudo chmod -R 755 ~/$SITEURL
 echo "Creating new Nginx server block config file..."
 sudo mv $SCRIPTPATH/server-block.conf /etc/nginx/sites-available/$SITEURL
 sudo sed -i "s/temp_siteurl/$SITEURL/g" /etc/nginx/sites-available/$SITEURL
+sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/sites-available/$SITEURL
 
 
 # 30. CREATE a symlink to the new config file
@@ -246,19 +247,23 @@ sudo service nginx restart
 # 32. DOWNLOAD the wp-cli package
 cd ~/
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-php wp-cli.phar --info
-sudo chmod +x wp-cli.phar
-sudo mv wp-cli.phar /usr/local/bin/wp
+php ~/wp-cli.phar --info
+sudo chmod +x ~/wp-cli.phar
+sudo mv ~/wp-cli.phar /usr/local/bin/wp
 
 
 # 33. DOWNLOAD WordPress into the domain directory
 cd ~/$SITEURL/public
-wp core download
+sudo -u $USERNAME -i -- wp core download
 
 
 # 34. CONFIGURE the new WordPress installation
-wp core config --dbname=$DBNAME --dbuser=$DBUSERNAME --dbpass=$DBPASSWORD
+sudo -u $USERNAME -i -- wp core config --dbname=$DBNAME --dbuser=$DBUSERNAME --dbpass=$DBPASSWORD
 
 
 # 35. INSTALL WordPress
-wp core install --url=$SITEURL --title=$SITETITLE --admin_user=$WPUSERNAME --admin_email=$WPEMAIL --admin_password=$WPPASSWORD
+sudo -u $USERNAME -i -- wp core install --url=$SITEURL --title=$SITETITLE --admin_user=$WPUSERNAME --admin_email=$WPEMAIL --admin_password=$WPPASSWORD
+
+
+# 36. SELF DESTRUCT
+sudo rm -rf $SCRIPTPATH
