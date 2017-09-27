@@ -199,7 +199,9 @@ sudo service nginx restart
 
 # 28. CREATE public directories for website
 echo "Creating domain web directories..."
+sudo mkdir -p /home/$USERNAME/$SITEURL/backups
 sudo mkdir -p /home/$USERNAME/$SITEURL/public
+sudo mkdir -p /home/$USERNAME/$SITEURL/cache
 sudo mkdir -p /home/$USERNAME/$SITEURL/logs
 
 
@@ -273,23 +275,40 @@ sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SITEURL/public/wp-config.php
 
 
 # 35. REPLACE WordPress branding with custom branding
-# sudo mv -v $SCRIPTPATH/branding.png /home/$USERNAME/$SITEURL/public/wp-admin/images/branding.png
-# sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.css
-# sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.css
-# sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
-# sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
+sudo mv -v $SCRIPTPATH/branding.png /home/$USERNAME/$SITEURL/public/wp-admin/images/branding.png
+sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.css
+sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.css
+sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
+sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
+
+
+# 36. CONFIGURE automatic backups
+sudo sed -i "s/temp_user/$USERNAME/g" $SCRIPTPATH/backups.sh
+sudo sed -i "s/temp_siteurl/$SITEURL/g" $SCRIPTPATH/backups.sh
+sudo mv $SCRIPTPATH/backups.sh /home/$USERNAME/$SITEURL/backups.sh
+sudo chmod u+x /home/$USERNAME/$SITEURL/backups.sh
+CRONBACKUPS="0 5 * * 0 sh /home/$USERNAME/$SITEURL/backups.sh"
+(crontab -u $USERNAME -l; echo "$CRONBACKUPS" ) | crontab -u $USERNAME -
 
 
 # 36. INSTALL Redis caching
 sudo apt update
 sudo apt install redis-server php-redis -y
 
+
 # 37. CONFIGURE Redis settings
 sudo sed -i "s/# maxmemory/maxmemory/g" /etc/redis/redis.conf
+
 
 # 38. RESTART Redis and PHP
 sudo service redis-server restart
 sudo service php7.1-fpm restart
+
+
+# 39. CONFIGURE WordPress cron jobs - auto check for updates
+CRONCONF="*/5 * * * * cd /home/$USERNAME/$SITEURL/public; php -q wp-cron.php >/dev/null 2>&1"
+(crontab -u $USERNAME -l; echo "$CRONCONF" ) | crontab -u $USERNAME -
+
 
 # 36. SELF DESTRUCT
 # sudo rm -rf $SCRIPTPATH
