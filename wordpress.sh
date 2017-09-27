@@ -75,10 +75,6 @@ echo "Adding $USERNAME to sudo group..."
 sudo usermod -aG sudo $USERNAME
 
 
-# 9. switch to the new user
-echo sudo su $USERNAME
-
-
 # 9. DISABLE root login via SSH
 echo "Disabling root login to server..."
 sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
@@ -184,9 +180,9 @@ sudo service nginx restart
 
 # 28. CREATE public directories for website
 echo "Creating domain web directories..."
-sudo mkdir -p ~/$SITEURL/public
-sudo mkdir -p ~/$SITEURL/logs
-sudo chmod -R 755 ~/$SITEURL
+sudo mkdir -p /home/$USERNAME/$SITEURL/public
+sudo mkdir -p /home/$USERNAME/$SITEURL/logs
+sudo chmod -R 755 /home/$USERNAME/$SITEURL
 
 
 # 29. CREATE new Nginx block config file
@@ -244,15 +240,15 @@ sudo service nginx restart
 
 
 # 32. DOWNLOAD the wp-cli package
-cd ~/
+cd /home/$USERNAME
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-php ~/wp-cli.phar --info
-sudo chmod +x ~/wp-cli.phar
-sudo mv ~/wp-cli.phar /usr/local/bin/wp
+php /home/$USERNAME/wp-cli.phar --info
+sudo chmod +x /home/$USERNAME/wp-cli.phar
+sudo mv /home/$USERNAME/wp-cli.phar /usr/local/bin/wp
 
 
 # 33. DOWNLOAD WordPress into the domain directory
-cd ~/$SITEURL/public
+cd /home/$USERNAME/$SITEURL/public
 sudo -u $USERNAME -i -- wp core download
 
 
