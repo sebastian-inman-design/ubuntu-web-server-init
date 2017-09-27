@@ -21,6 +21,9 @@ WPEMAIL=$DEFAULT_EMAIL
 WPUSERNAME=$DEFAULT_USERNAME
 WPPASSWORD=$DEFAULT_PASSWORD
 
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
 
 # 1. UPDATE server hostname
 echo "Updating the server hostname: $SITEURL"
@@ -68,6 +71,10 @@ echo "$USERNAME:$PASSWORD" | sudo chpasswd
 # 8. add user to sudo group
 echo "Adding $USERNAME to sudo group..."
 sudo usermod -aG sudo $USERNAME
+
+
+# 9. switch to the new user
+echo $PASSWORD | sudo su $USERNAME
 
 
 # 9. DISABLE root login via SSH
@@ -162,7 +169,7 @@ echo "Backing up original Nginx config file..."
 sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.bkp
 #  C. REPLACE old Nginx config with new one
 echo "Creating new Nginx config file..."
-sudo mv nginx.conf /etc/nginx/nginx.conf
+sudo mv $SCRIPTPATH/nginx.conf /etc/nginx/nginx.conf
 #  D. REPLACE temp_user with current user
 echo "Updating the new Nginx config file..."
 sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/nginx.conf
@@ -182,7 +189,7 @@ sudo chmod -R 755 ~/$SITEURL
 
 # 29. CREATE new Nginx block config file
 echo "Creating new Nginx server block config file..."
-sudo mv server-block.conf /etc/nginx/sites-available/$SITEURL
+sudo mv $SCRIPTPATH/server-block.conf /etc/nginx/sites-available/$SITEURL
 sudo sed -i "s/temp_siteurl/$SITEURL/g" /etc/nginx/sites-available/$SITEURL
 
 
