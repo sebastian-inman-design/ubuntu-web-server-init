@@ -76,8 +76,7 @@ sudo usermod -aG sudo $USERNAME
 
 
 # 9. switch to the new user
-echo su $USERNAME
-echo "$PASSWORD" | sudo ls
+echo sudo su $USERNAME
 
 
 # 9. DISABLE root login via SSH
