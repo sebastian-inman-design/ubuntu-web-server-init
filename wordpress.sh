@@ -238,11 +238,10 @@ sudo apt install mysql-server -y
 
 
 # 32. CREATE and CONFIGURE the new database
-mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "CREATE DATABASE $DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;"
-mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "CREATE USER '$DBUSERNAME'@'localhost' IDENTIFIED BY '$DBPASSWORD';"
-mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSERNAME'@'localhost';"
-mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "GRANT SELECT, INSERT, UPDATE, DELETE ON $DBNAME.* TO '$DBUSERNAME'@'localhost';"
-mysql -u $DBUSERNAME -p$DBPASSWORD -Bse "FLUSH PRIVILEGES;"
+sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/mysql.txt
+sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/mysql.txt
+sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/mysql.txt
+mysql -u$DBUSERNAME -p$DBPASSWORD < mysql.txt
 
 
 # 33. INSTALL PHPMyAdmin
