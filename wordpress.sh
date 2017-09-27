@@ -75,6 +75,14 @@ echo "Adding $USERNAME to sudo group..."
 sudo usermod -aG sudo $USERNAME
 
 
+# 9. CREATE the user home directory
+sudo mkdir -p /home/$USERNAME
+
+
+# 10. SET ownership of user home directory
+sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
+
+
 # 9. DISABLE root login via SSH
 echo "Disabling root login to server..."
 sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
@@ -182,6 +190,11 @@ sudo service nginx restart
 echo "Creating domain web directories..."
 sudo mkdir -p /home/$USERNAME/$SITEURL/public
 sudo mkdir -p /home/$USERNAME/$SITEURL/logs
+
+
+# 29. CREATE empty log files for website
+sudo touch /home/$USERNAME/$SITEURL/logs/access.log
+sudo touch /home/$USERNAME/$SITEURL/logs/error.log
 sudo chmod -R 755 /home/$USERNAME/$SITEURL
 
 
@@ -249,7 +262,7 @@ sudo mv /home/$USERNAME/wp-cli.phar /usr/local/bin/wp
 
 # 33. DOWNLOAD WordPress into the domain directory
 cd /home/$USERNAME/$SITEURL/public
-sudo -u $USERNAME -i -- wp core download
+sudo -u $USERNAME -i -- wp --allow-root core download --locale=sv_SE
 
 
 # 34. CONFIGURE the new WordPress installation
@@ -259,6 +272,17 @@ sudo -u $USERNAME -i -- wp core config --dbname=$DBNAME --dbuser=$DBUSERNAME --d
 # 35. INSTALL WordPress
 sudo -u $USERNAME -i -- wp core install --url=$SITEURL --title=$SITETITLE --admin_user=$WPUSERNAME --admin_email=$WPEMAIL --admin_password=$WPPASSWORD
 
+
+# 36. INSTALL Redis caching
+sudo apt update
+sudo apt install redis-server php-redis -y
+
+# 37. CONFIGURE Redis settings
+sudo sed -i "s/# maxmemory/maxmemory/g" /etc/redis/redis.conf
+
+# 38. RESTART Redis and PHP
+sudo service redis-server restart
+sudo service php7.1-fpm restart
 
 # 36. SELF DESTRUCT
 sudo rm -rf $SCRIPTPATH
