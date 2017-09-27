@@ -110,7 +110,7 @@ sudo apt install nginx -y
 
 # 18. ENABLE PHP to load in Nginx
 echo "Setting up Nginx PHP params..."
-sudo echo "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;" >> /etc/nginx/fastcgi_params
+sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
 
 
 # 19. RESTART the Nginx web server
@@ -149,37 +149,45 @@ echo "Installing the MariaDB package..."
 sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 sudo add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.nodesdirect.com/mariadb/repo/10.1/ubuntu xenial main" -y
 sudo apt update
-sudo apt install mariadb-server -y
+sudo apt install mariadb-server libmariadbclient-dev libmariadbd-dev -y
 
 
 # 25. CONFIGURE default system database tables
+echo "Configuring MariaDB..."
 sudo mysql_install_db
-sudo mysql_secure_installation
+# sudo mysql_secure_installation
 
 
 # 26. CONFIGURE a "catch-all" server block
 #  A. REMOVE default Nginx server blocks
+echo "Removing default Nginx server blocks..."
 sudo rm /etc/nginx/sites-available/default
 sudo rm /etc/nginx/sites-enabled/default
 #  B. RENAME the old Nginx config as backup
+echo "Backing up original Nginx config file..."
 sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.bkp
 #  C. REPLACE old Nginx config with new one
+echo "Creating new Nginx config file..."
 sudo mv nginx.conf /etc/nginx/nginx.conf
 #  D. REPLACE temp_user with current user
+echo "Updating the new Nginx config file..."
 sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/nginx.conf
 
 
 # 27. RESTART the Nginx web server
+echo "Restarting the Nginx web server..."
 sudo service nginx restart
 
 
 # 28. CREATE public directories for website
+echo "Creating domain web directories..."
 sudo mkdir -p ~/$SITEURL/public
 sudo mkdir -p ~/$SITEURL/logs
 sudo chmod -R 755 ~/$SITEURL
 
 
 # 29. CREATE new Nginx block config file
+echo "Creating new Nginx server block config file..."
 sudo mv server-block.conf /etc/nginx/sites-available/$SITEURL
 sudo sed -i "s/temp_siteurl/$SITEURL/g" /etc/nginx/sites-available/$SITEURL
 
