@@ -269,7 +269,7 @@ sudo rm -rf /home/$USERNAME/wordpress
 sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/wp-config.php
-sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SIREURL/public/wp-config.php
+sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SITEURL/public/wp-config.php
 
 
 # 35. REPLACE WordPress branding with custom branding
