@@ -201,7 +201,7 @@ sudo service php7.1-fpm restart
   echo "Seeds Creative Services, LLC";
   echo "$SITEURL";
   echo "$WPEMAIL";
-} | sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$DBNAME.key -out /etc/ssl/certs/$DBNAME.crt
+} | sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$SITEURL.key -out /etc/ssl/certs/$SITEURL.crt
 
 # TODO
 
