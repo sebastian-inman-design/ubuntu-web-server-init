@@ -5,10 +5,13 @@
 # TODO 3. Install SSL certificates for HTTPS connection
 # TODO 4. Install HTTP2 server connections
 
+DATETIME=`date '+%Y-%m-%d %H:%M:%S'`
+
 SEED_NAME="Seeds Creative Services"
 SEED_TITLE="$SEED_NAME - WordPress Installation"
 
 DEFAULT_URL="fbguesswho.com"
+DEFAULT_NAME="Sebastian Inman"
 DEFAULT_EMAIL="sebastian@seedscs.com"
 DEFAULT_USERNAME="sebastian"
 DEFAULT_PASSWORD="pa55word1"
@@ -26,7 +29,7 @@ DBPASSWORD=$DEFAULT_PASSWORD
 
 WPEMAIL=$DEFAULT_EMAIL
 WPUSERNAME=$DEFAULT_USERNAME
-WPPASSWORD=$DEFAULT_PASSWORD
+WPPASSWORD=$(openssl passwd -1 "$DEFAULT_PASSWORD")
 
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
@@ -228,6 +231,7 @@ sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/sites-available/$SITEURL
 # 30. CREATE a symlink to the new config file
 sudo ln -s /etc/nginx/sites-available/$SITEURL /etc/nginx/sites-enabled/$SITEURL
 
+
 # 27. RESTART the Nginx web server
 echo "Restarting the Nginx web server..."
 sudo service nginx restart
@@ -260,10 +264,10 @@ sudo apt install mysql-server -y
 
 
 # 32. CREATE and CONFIGURE the new database
-sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/database.sql
-sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/database.sql
-sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/database.sql
-mysql --verbose -u root -p$DBPASSWORD < $SCRIPTPATH/database.sql
+sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/database/init.sql
+sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/database/init.sql
+sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/database/init.sql
+mysql --verbose -u root -p$DBPASSWORD < $SCRIPTPATH/database/init.sql
 
 
 # 33. INSTALL PHPMyAdmin
@@ -294,6 +298,17 @@ sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/wp-config.php
 sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SITEURL/public/wp-config.php
 
 
+# 32. CREATE the WordPress default admin
+sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
+sudo sed -i "s/temp_wpemail/$WPEMAIL/g" $SCRIPTPATH/database/wp_createAdmin.sql
+sudo sed -i "s/temp_wpname/$DEFAULT_NAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
+sudo sed -i "s/temp_wpusername/$WPUSERNAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
+sudo sed -i "s/temp_wppassword/$WPPASSWORD/g" $SCRIPTPATH/database/wp_createAdmin.sql
+sudo sed -i "s/temp_wpnicename/$WPUSERNAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
+sudo sed -i "s/temp_datetime/$DATETIME/g" $SCRIPTPATH/database/wp_createAdmin.sql
+mysql --verbose -u root -p$DBPASSWORD < $SCRIPTPATH/database/wp_createAdmin.sql
+
+
 # 35. REPLACE WordPress branding with custom branding
 sudo mv -v $SCRIPTPATH/branding.png /home/$USERNAME/$SITEURL/public/wp-admin/images/branding.png
 sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.css
@@ -310,6 +325,15 @@ sudo rm -r /home/$USERNAME/$SITEURL/public/wp-content/plugins/*
 for plugin in $SCRIPTPATH/plugins/*.zip; do
   unzip "$plugin" -d /home/$USERNAME/$SITEURL/public/wp-content/plugins/
 done
+
+
+# 37. CONFIGURE wp-upload folder to be writable
+sudo mkdir -p /home/$USERNAME/$SITEURL/public/wp-content/uploads
+sudo chmod -R 775 /home/$USERNAME/$SITEURL/public/wp-content/uploads
+
+
+# 10. SET ownership of user domain directory
+sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/$SITEURL/public
 
 
 # 36. CONFIGURE automatic backups

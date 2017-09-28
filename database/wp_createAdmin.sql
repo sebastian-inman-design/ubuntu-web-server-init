@@ -1,0 +1,3 @@
+INSERT INTO 'temp_dbname'.'seeds_users' ('ID', 'user_login', 'user_pass', 'user_nicename', 'user_email', 'user_url', 'user_registered', 'user_status', 'display_name') VALUES ('1', 'temp_wpusername', MD5('temp_wppassword'), 'temp_wpnicename', 'temp_wpemail', 'https://seedscs.com', 'temp_datetime', '0', 'temp_wpname');
+INSERT INTO 'temp_dbname'.'seeds_usermeta' ('umeta_id', 'user_id', 'meta_key', 'meta_value') VALUES (NULL, '1', 'seeds_capabilities', 'a:1:{s:13:"administrator";s:1:"1";}');
+INSERT INTO 'temp_dbname'.'seeds_usermeta' ('umeta_id', 'user_id', 'meta_key', 'meta_value') VALUES (NULL, '1', 'seeds_user_level', '10');
