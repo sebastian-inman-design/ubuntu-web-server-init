@@ -472,7 +472,7 @@ LOCK TABLES `temp_dbname`.`seeds_users` WRITE;
 
 INSERT INTO `temp_dbname`.`seeds_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`)
 VALUES
-	(1,'temp_wpusername',MD5('temp_wppassword'),'temp_wpusername','temp_wpemail','','temp_datetime','',0,'temp_wpname');
+	(1,'temp_wpusername','temp_wppassword','temp_wpusername','temp_wpemail','','temp_datetime','',0,'temp_wpname');
 
 /*!40000 ALTER TABLE `temp_dbname`.`seeds_users` ENABLE KEYS */;
 UNLOCK TABLES;
