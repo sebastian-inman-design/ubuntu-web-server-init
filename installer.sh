@@ -31,6 +31,7 @@ PromptSettings() {
   # Prompt user for the servers domain name
   read -p "Enter the domain for this server: " PROMPTDOMAIN
   SITEDOMAIN=$PROMPTDOMAIN
+  DATABASE="${SITEDOMAIN//.}"
   # Add the new user to the system
   AddSystemUser
 }
