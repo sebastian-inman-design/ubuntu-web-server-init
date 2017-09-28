@@ -331,6 +331,10 @@ sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/w
 sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
 
 
+# 37. INSTALL the robots.txt file
+sudo mv -v $SCRIPTPATH/robots.txt /home/$USERNAME/$SITEURL/public/robots.txt
+
+
 # 36. DELETE the existing WordPress Plugins
 sudo rm -r /home/$USERNAME/$SITEURL/public/wp-content/plugins/*
 
