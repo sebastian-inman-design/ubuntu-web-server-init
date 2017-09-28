@@ -11,7 +11,6 @@ DATETIME=`date '+%Y-%m-%d %H:%M:%S'`
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 
-
 read -p "Enter your username: " PROMPTUSERNAME
 USERNAME=$PROMPTUSERNAME
 DBUSERNAME=$PROMPTUSERNAME
@@ -22,8 +21,8 @@ read -p "Enter your email address: " PROMPTEMAIL
 WPEMAIL=$PROMPTEMAIL
 
 
-read -p "Enter your password: " PROMPTPASSWORD
-USERNAME=$PROMPTPASSWORD
+read -sp "Enter your password: " PROMPTPASSWORD
+PASSWORD=$PROMPTPASSWORD
 DBPASSWORD=$PROMPTPASSWORD
 WPPASSWORD=$(openssl passwd -1 "$PROMPTPASSWORD")
 
@@ -214,16 +213,16 @@ sudo chmod -R 755 /home/$USERNAME/$SITEURL
 
 
 # 30. MOVE the favicon to the web directory
-sudo mv $SCRIPTPATH/favicon.ico /home/$USERNAME/$SITEURL/public/favicon.ico
+sudo mv -v $SCRIPTPATH/favicon.ico /home/$USERNAME/$SITEURL/public/favicon.ico
 
 
 # 29. CREATE new Nginx block config file
 echo "Creating new Nginx server block config file..."
 IPADDRESS=$(curl http://icanhazip.com)
-sudo mv $SCRIPTPATH/server-block.conf /etc/nginx/sites-available/$SITEURL
-sudo sed -i "s/temp_ipaddress/$IPADDRESS/g" /etc/nginx/sites-available/$SIREURL
-sudo sed -i "s/temp_siteurl/$SITEURL/g" /etc/nginx/sites-available/$SITEURL
-sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/sites-available/$SITEURL
+sudo sed -i "s/temp_ipaddress/$IPADDRESS/g" $SCRIPTPATH/server-block.conf
+sudo sed -i "s/temp_siteurl/$SITEURL/g" $SCRIPTPATH/server-block.conf
+sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPTPATH/server-block.conf
+sudo mv -v $SCRIPTPATH/server-block.conf /etc/nginx/sites-available/$SITEURL
 
 
 # 30. CREATE a symlink to the new config file
@@ -293,7 +292,7 @@ sudo rm -rf /home/$USERNAME/wordpress
 sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/wp-config.php
-sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SITEURL/public/wp-config.php
+sudo mv -v $SCRIPTPATH/wp-config.php /home/$USERNAME/$SITEURL/public/wp-config.php
 
 
 # 35. REPLACE WordPress branding with custom branding
