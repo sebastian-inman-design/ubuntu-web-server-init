@@ -23,9 +23,9 @@
 # Dump of table seeds_commentmeta
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_commentmeta`;
+DROP TABLE IF EXISTS `seeds_commentmeta`;
 
-CREATE TABLE `temp_dbname`.`seeds_commentmeta` (
+CREATE TABLE `seeds_commentmeta` (
   `meta_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `comment_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `meta_key` varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
@@ -40,9 +40,9 @@ CREATE TABLE `temp_dbname`.`seeds_commentmeta` (
 # Dump of table seeds_comments
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_comments`;
+DROP TABLE IF EXISTS `seeds_comments`;
 
-CREATE TABLE `temp_dbname`.`seeds_comments` (
+CREATE TABLE `seeds_comments` (
   `comment_ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `comment_post_ID` bigint(20) unsigned NOT NULL DEFAULT '0',
   `comment_author` tinytext COLLATE utf8mb4_unicode_520_ci NOT NULL,
@@ -66,10 +66,10 @@ CREATE TABLE `temp_dbname`.`seeds_comments` (
   KEY `comment_author_email` (`comment_author_email`(10))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_comments` WRITE;
+LOCK TABLES `seeds_comments` WRITE;
 /*!40000 ALTER TABLE `seeds_comments` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_comments` (`comment_ID`, `comment_post_ID`, `comment_author`, `comment_author_email`, `comment_author_url`, `comment_author_IP`, `comment_date`, `comment_date_gmt`, `comment_content`, `comment_karma`, `comment_approved`, `comment_agent`, `comment_type`, `comment_parent`, `user_id`)
+INSERT INTO `seeds_comments` (`comment_ID`, `comment_post_ID`, `comment_author`, `comment_author_email`, `comment_author_url`, `comment_author_IP`, `comment_date`, `comment_date_gmt`, `comment_content`, `comment_karma`, `comment_approved`, `comment_agent`, `comment_type`, `comment_parent`, `user_id`)
 VALUES
 	(1,1,'A WordPress Commenter','wapuu@wordpress.example','https://wordpress.org/','','2017-09-28 18:02:13','2017-09-28 18:02:13','Hi, this is a comment.\nTo get started with moderating, editing, and deleting comments, please visit the Comments screen in the dashboard.\nCommenter avatars come from <a href=\"https://gravatar.com\">Gravatar</a>.',0,'1','','',0,0);
 
@@ -80,9 +80,9 @@ UNLOCK TABLES;
 # Dump of table seeds_links
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_links`;
+DROP TABLE IF EXISTS `seeds_links`;
 
-CREATE TABLE `temp_dbname`.`seeds_links` (
+CREATE TABLE `seeds_links` (
   `link_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `link_url` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `link_name` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
@@ -105,9 +105,9 @@ CREATE TABLE `temp_dbname`.`seeds_links` (
 # Dump of table seeds_options
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_options`;
+DROP TABLE IF EXISTS `seeds_options`;
 
-CREATE TABLE `temp_dbname`.`seeds_options` (
+CREATE TABLE `seeds_options` (
   `option_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `option_name` varchar(191) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `option_value` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
@@ -116,10 +116,10 @@ CREATE TABLE `temp_dbname`.`seeds_options` (
   UNIQUE KEY `option_name` (`option_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_options` WRITE;
+LOCK TABLES `seeds_options` WRITE;
 /*!40000 ALTER TABLE `seeds_options` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_options` (`option_id`, `option_name`, `option_value`, `autoload`)
+INSERT INTO `seeds_options` (`option_id`, `option_name`, `option_value`, `autoload`)
 VALUES
 	(1,'siteurl','http://temp_siteurl','yes'),
 	(2,'home','http://temp_siteurl','yes'),
@@ -240,9 +240,9 @@ UNLOCK TABLES;
 # Dump of table seeds_postmeta
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_postmeta`;
+DROP TABLE IF EXISTS `seeds_postmeta`;
 
-CREATE TABLE `temp_dbname`.`seeds_postmeta` (
+CREATE TABLE `seeds_postmeta` (
   `meta_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `post_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `meta_key` varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
@@ -252,23 +252,23 @@ CREATE TABLE `temp_dbname`.`seeds_postmeta` (
   KEY `meta_key` (`meta_key`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_postmeta` WRITE;
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_postmeta` DISABLE KEYS */;
+LOCK TABLES `seeds_postmeta` WRITE;
+/*!40000 ALTER TABLE `seeds_postmeta` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_postmeta` (`meta_id`, `post_id`, `meta_key`, `meta_value`)
+INSERT INTO `seeds_postmeta` (`meta_id`, `post_id`, `meta_key`, `meta_value`)
 VALUES
 	(1,2,'_wp_page_template','default');
 
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_postmeta` ENABLE KEYS */;
+/*!40000 ALTER TABLE `seeds_postmeta` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 # Dump of table seeds_posts
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_posts`;
+DROP TABLE IF EXISTS `seeds_posts`;
 
-CREATE TABLE `temp_dbname`.`seeds_posts` (
+CREATE TABLE `seeds_posts` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `post_author` bigint(20) unsigned NOT NULL DEFAULT '0',
   `post_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -299,24 +299,24 @@ CREATE TABLE `temp_dbname`.`seeds_posts` (
   KEY `post_author` (`post_author`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_posts` WRITE;
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_posts` DISABLE KEYS */;
+LOCK TABLES `seeds_posts` WRITE;
+/*!40000 ALTER TABLE `seeds_posts` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_posts` (`ID`, `post_author`, `post_date`, `post_date_gmt`, `post_content`, `post_title`, `post_excerpt`, `post_status`, `comment_status`, `ping_status`, `post_password`, `post_name`, `to_ping`, `pinged`, `post_modified`, `post_modified_gmt`, `post_content_filtered`, `post_parent`, `guid`, `menu_order`, `post_type`, `post_mime_type`, `comment_count`)
+INSERT INTO `seeds_posts` (`ID`, `post_author`, `post_date`, `post_date_gmt`, `post_content`, `post_title`, `post_excerpt`, `post_status`, `comment_status`, `ping_status`, `post_password`, `post_name`, `to_ping`, `pinged`, `post_modified`, `post_modified_gmt`, `post_content_filtered`, `post_parent`, `guid`, `menu_order`, `post_type`, `post_mime_type`, `comment_count`)
 VALUES
 	(1,1,'2017-09-28 18:02:13','2017-09-28 18:02:13','Welcome to WordPress. This is your first post. Edit or delete it, then start writing!','Hello world!','','publish','open','open','','hello-world','','','2017-09-28 18:02:13','2017-09-28 18:02:13','',0,'http://fbguesswho.com/?p=1',0,'post','',1),
 	(2,1,'2017-09-28 18:02:13','2017-09-28 18:02:13','This is an example page. It\'s different from a blog post because it will stay in one place and will show up in your site navigation (in most themes). Most people start with an About page that introduces them to potential site visitors. It might say something like this:\n\n<blockquote>Hi there! I\'m a bike messenger by day, aspiring actor by night, and this is my website. I live in Los Angeles, have a great dog named Jack, and I like pi&#241;a coladas. (And gettin\' caught in the rain.)</blockquote>\n\n...or something like this:\n\n<blockquote>The XYZ Doohickey Company was founded in 1971, and has been providing quality doohickeys to the public ever since. Located in Gotham City, XYZ employs over 2,000 people and does all kinds of awesome things for the Gotham community.</blockquote>\n\nAs a new WordPress user, you should go to <a href=\"http://fbguesswho.com/wp-admin/\">your dashboard</a> to delete this page and create new pages for your content. Have fun!','Sample Page','','publish','closed','open','','sample-page','','','2017-09-28 18:02:13','2017-09-28 18:02:13','',0,'http://fbguesswho.com/?page_id=2',0,'page','',0);
 
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_posts` ENABLE KEYS */;
+/*!40000 ALTER TABLE `seeds_posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 # Dump of table seeds_term_relationships
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_term_relationships`;
+DROP TABLE IF EXISTS `seeds_term_relationships`;
 
-CREATE TABLE `temp_dbname`.`seeds_term_relationships` (
+CREATE TABLE `seeds_term_relationships` (
   `object_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `term_taxonomy_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `term_order` int(11) NOT NULL DEFAULT '0',
@@ -324,23 +324,23 @@ CREATE TABLE `temp_dbname`.`seeds_term_relationships` (
   KEY `term_taxonomy_id` (`term_taxonomy_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_term_relationships` WRITE;
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_term_relationships` DISABLE KEYS */;
+LOCK TABLES `seeds_term_relationships` WRITE;
+/*!40000 ALTER TABLE `seeds_term_relationships` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`)
+INSERT INTO `seeds_term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`)
 VALUES
 	(1,1,0);
 
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_term_relationships` ENABLE KEYS */;
+/*!40000 ALTER TABLE `seeds_term_relationships` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 # Dump of table seeds_term_taxonomy
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_term_taxonomy`;
+DROP TABLE IF EXISTS `seeds_term_taxonomy`;
 
-CREATE TABLE `temp_dbname`.`seeds_term_taxonomy` (
+CREATE TABLE `seeds_term_taxonomy` (
   `term_taxonomy_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `term_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `taxonomy` varchar(32) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
@@ -352,23 +352,23 @@ CREATE TABLE `temp_dbname`.`seeds_term_taxonomy` (
   KEY `taxonomy` (`taxonomy`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_term_taxonomy` WRITE;
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_term_taxonomy` DISABLE KEYS */;
+LOCK TABLES `seeds_term_taxonomy` WRITE;
+/*!40000 ALTER TABLE `seeds_term_taxonomy` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_term_taxonomy` (`term_taxonomy_id`, `term_id`, `taxonomy`, `description`, `parent`, `count`)
+INSERT INTO `seeds_term_taxonomy` (`term_taxonomy_id`, `term_id`, `taxonomy`, `description`, `parent`, `count`)
 VALUES
 	(1,1,'category','',0,1);
 
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_term_taxonomy` ENABLE KEYS */;
+/*!40000 ALTER TABLE `seeds_term_taxonomy` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 # Dump of table seeds_termmeta
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_termmeta`;
+DROP TABLE IF EXISTS `seeds_termmeta`;
 
-CREATE TABLE `temp_dbname`.`seeds_termmeta` (
+CREATE TABLE `seeds_termmeta` (
   `meta_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `term_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `meta_key` varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
@@ -383,9 +383,9 @@ CREATE TABLE `temp_dbname`.`seeds_termmeta` (
 # Dump of table seeds_terms
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_terms`;
+DROP TABLE IF EXISTS `seeds_terms`;
 
-CREATE TABLE `temp_dbname`.`seeds_terms` (
+CREATE TABLE `seeds_terms` (
   `term_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `slug` varchar(200) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
@@ -395,23 +395,23 @@ CREATE TABLE `temp_dbname`.`seeds_terms` (
   KEY `name` (`name`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_terms` WRITE;
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_terms` DISABLE KEYS */;
+LOCK TABLES `seeds_terms` WRITE;
+/*!40000 ALTER TABLE `seeds_terms` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_terms` (`term_id`, `name`, `slug`, `term_group`)
+INSERT INTO `seeds_terms` (`term_id`, `name`, `slug`, `term_group`)
 VALUES
 	(1,'Uncategorized','uncategorized',0);
 
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_terms` ENABLE KEYS */;
+/*!40000 ALTER TABLE `seeds_terms` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 # Dump of table seeds_usermeta
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_usermeta`;
+DROP TABLE IF EXISTS `seeds_usermeta`;
 
-CREATE TABLE `temp_dbname`.`seeds_usermeta` (
+CREATE TABLE `seeds_usermeta` (
   `umeta_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `meta_key` varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
@@ -421,10 +421,10 @@ CREATE TABLE `temp_dbname`.`seeds_usermeta` (
   KEY `meta_key` (`meta_key`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_usermeta` WRITE;
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_usermeta` DISABLE KEYS */;
+LOCK TABLES `seeds_usermeta` WRITE;
+/*!40000 ALTER TABLE `seeds_usermeta` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`)
+INSERT INTO `seeds_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`)
 VALUES
 	(1,1,'nickname','temp_wpusername'),
 	(2,1,'first_name',''),
@@ -441,16 +441,16 @@ VALUES
 	(13,1,'dismissed_wp_pointers',''),
 	(14,1,'show_welcome_panel','1');
 
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_usermeta` ENABLE KEYS */;
+/*!40000 ALTER TABLE `seeds_usermeta` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 # Dump of table seeds_users
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `temp_dbname`.`seeds_users`;
+DROP TABLE IF EXISTS `seeds_users`;
 
-CREATE TABLE `temp_dbname`.`seeds_users` (
+CREATE TABLE `seeds_users` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_login` varchar(60) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `user_pass` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
@@ -467,14 +467,14 @@ CREATE TABLE `temp_dbname`.`seeds_users` (
   KEY `user_email` (`user_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-LOCK TABLES `temp_dbname`.`seeds_users` WRITE;
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_users` DISABLE KEYS */;
+LOCK TABLES `seeds_users` WRITE;
+/*!40000 ALTER TABLE `seeds_users` DISABLE KEYS */;
 
-INSERT INTO `temp_dbname`.`seeds_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`)
+INSERT INTO `seeds_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`)
 VALUES
 	(1,'temp_wpusername','temp_wppassword','temp_wpusername','temp_wpemail','','temp_datetime','',0,'temp_wpname');
 
-/*!40000 ALTER TABLE `temp_dbname`.`seeds_users` ENABLE KEYS */;
+/*!40000 ALTER TABLE `seeds_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
