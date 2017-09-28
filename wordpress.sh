@@ -302,7 +302,11 @@ sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/w
 sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
 
 
-# 36. INSTALL WordPress plugins
+# 36. DELETE the existing WordPress Plugins
+sudo rm -r /home/$USERNAME/$SITEURL/public/wp-content/plugins/*
+
+
+# 36. INSTALL default WordPress plugins
 for plugin in $SCRIPTPATH/plugins/*.zip; do
   unzip "$plugin" -d /home/$USERNAME/$SITEURL/public/wp-content/plugins/
 done
