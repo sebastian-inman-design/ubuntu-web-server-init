@@ -322,7 +322,7 @@ sudo rm -r /home/$USERNAME/$SITEURL/public/wp-content/plugins/*
 
 
 # 36. INSTALL default WordPress plugins
-for plugin in $SCRIPTPATH/plugins/*.zip; do
+for plugin in $SCRIPTPATH/wp-plugins/*.zip; do
   unzip "$plugin" -d /home/$USERNAME/$SITEURL/public/wp-content/plugins/
 done
 
