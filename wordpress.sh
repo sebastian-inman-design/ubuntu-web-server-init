@@ -298,15 +298,17 @@ sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/wp-config.php
 sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SITEURL/public/wp-config.php
 
 
-# 32. CREATE the WordPress default admin
-sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
-sudo sed -i "s/temp_wpemail/$WPEMAIL/g" $SCRIPTPATH/database/wp_createAdmin.sql
-sudo sed -i "s/temp_wpname/$DEFAULT_NAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
-sudo sed -i "s/temp_wpusername/$WPUSERNAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
-sudo sed -i "s/temp_wppassword/$WPPASSWORD/g" $SCRIPTPATH/database/wp_createAdmin.sql
-sudo sed -i "s/temp_wpnicename/$WPUSERNAME/g" $SCRIPTPATH/database/wp_createAdmin.sql
-sudo sed -i "s/temp_datetime/$DATETIME/g" $SCRIPTPATH/database/wp_createAdmin.sql
-mysql --verbose -u root -p$DBPASSWORD < $SCRIPTPATH/database/wp_createAdmin.sql
+# 32. CREATE and CONFIGURE the WordPress database
+sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_blogname/$SEED_NAME/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_blogtitle/$SEED_TITLE/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_siteurl/$SITEURL/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_wpemail/$WPEMAIL/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_wpname/$DEFAULT_NAME/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_wpusername/$WPUSERNAME/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_wppassword/$WPPASSWORD/g" $SCRIPTPATH/database/wordpress.sql
+sudo sed -i "s/temp_datetime/$DATETIME/g" $SCRIPTPATH/database/wordpress.sql
+mysql --verbose -u root -p$DBPASSWORD < $SCRIPTPATH/database/wordpress.sql
 
 
 # 35. REPLACE WordPress branding with custom branding
