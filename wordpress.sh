@@ -11,27 +11,32 @@ DATETIME=`date '+%Y-%m-%d %H:%M:%S'`
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 
+echo "";
 read -p "Enter your username: " PROMPTUSERNAME
 USERNAME=$PROMPTUSERNAME
 DBUSERNAME=$PROMPTUSERNAME
 WPUSERNAME=$PROMPTUSERNAME
 
 
+echo "";
 read -p "Enter your email address: " PROMPTEMAIL
 WPEMAIL=$PROMPTEMAIL
 
 
+echo "";
 read -sp "Enter your password: " PROMPTPASSWORD
 PASSWORD=$PROMPTPASSWORD
 DBPASSWORD=$PROMPTPASSWORD
 WPPASSWORD=$(openssl passwd -1 "$PROMPTPASSWORD")
 
 
+echo "";
 read -p "Enter the domain for this server: " PROMPTDOMAIN
 SITEURL=$PROMPTDOMAIN
 DBNAME="${$PROMPTDOMAIN/./_}"
 
 
+echo "";
 # 1. UPDATE server hostname
 echo "Updating the server hostname: $SITEURL"
 echo $SITEURL > /etc/hostname
