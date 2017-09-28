@@ -302,6 +302,12 @@ sudo sed -i "s/w-logo-blue.png/branding.png/g" /home/$USERNAME/$SITEURL/public/w
 sudo sed -i "s/wordpress-logo.svg/branding.png/g" /home/$USERNAME/$SITEURL/public/wp-admin/css/install.min.css
 
 
+# 36. INSTALL WordPress plugins
+for plugin in $SCRIPTPATH/plugins/*.zip; do
+  unzip "$plugin" -d /home/$USERNAME/$SITEURL/public/wp-content/plugins/
+done
+
+
 # 36. CONFIGURE automatic backups
 sudo sed -i "s/temp_user/$USERNAME/g" $SCRIPTPATH/backups.sh
 sudo sed -i "s/temp_siteurl/$SITEURL/g" $SCRIPTPATH/backups.sh
