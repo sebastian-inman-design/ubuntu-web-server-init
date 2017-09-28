@@ -228,6 +228,10 @@ sudo sed -i "s/temp_username/$USERNAME/g" /etc/nginx/sites-available/$SITEURL
 # 30. CREATE a symlink to the new config file
 sudo ln -s /etc/nginx/sites-available/$SITEURL /etc/nginx/sites-enabled/$SITEURL
 
+# 27. RESTART the Nginx web server
+echo "Restarting the Nginx web server..."
+sudo service nginx restart
+
 
 # 33. INSTALL LetsEncrypt package
 sudo apt update
