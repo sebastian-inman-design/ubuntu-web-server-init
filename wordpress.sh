@@ -234,21 +234,21 @@ sudo service nginx restart
 
 
 # 33. INSTALL LetsEncrypt package
-sudo apt update
-sudo apt install letsencrypt -y
+# sudo apt update
+# sudo apt install letsencrypt -y
 
 
 # 34. CONFIGURE SSL certificate for domain
-sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITEURL/public -d $SITEURL
+# sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITEURL/public -d $SITEURL
 
 
 # 31. RERSTART the Nginx web server
-sudo service nginx restart
+# sudo service nginx restart
 
 
 # 36. AUTO renew SSL certificates
-CRONRENEWSSL="0 0,12 * * * letsencrypt renew >/dev/null 2>&1"
-(crontab -u $USERNAME -l; echo "$CRONRENEWSSL" ) | crontab -u $USERNAME -
+# CRONRENEWSSL="0 0,12 * * * letsencrypt renew >/dev/null 2>&1"
+# (crontab -u $USERNAME -l; echo "$CRONRENEWSSL" ) | crontab -u $USERNAME -
 
 
 # 24. INSTALL MySQL
