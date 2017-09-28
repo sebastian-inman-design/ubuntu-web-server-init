@@ -191,19 +191,14 @@ echo "Restarting the PHP service..."
 sudo service php7.1-fpm restart
 
 
+# INSTALL letsencrypt package
+sudo apt update
+sudo apt install letsencrypt -y
+
+
 # CREATE a self-signed SSL certificate
+echo "$WPEMAIL" | sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITEURL/public -d $SITEURL
 
-{
-  echo "US";
-  echo "Oregon";
-  echo "Medford";
-  echo "Seeds Creative Services, LLC";
-  echo "Seeds Creative Services, LLC";
-  echo "$SITEURL";
-  echo "$WPEMAIL";
-} | sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$SITEURL.key -out /etc/ssl/certs/$SITEURL.crt
-
-# TODO
 
 # 26. CONFIGURE a "catch-all" server block
 #  A. REMOVE default Nginx server blocks
@@ -260,24 +255,6 @@ sudo ln -s /etc/nginx/sites-available/$SITEURL /etc/nginx/sites-enabled/$SITEURL
 # 27. RESTART the Nginx web server
 echo "Restarting the Nginx web server..."
 sudo service nginx restart
-
-
-# 33. INSTALL LetsEncrypt package
-# sudo apt update
-# sudo apt install letsencrypt -y
-
-
-# 34. CONFIGURE SSL certificate for domain
-# sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITEURL/public -d $SITEURL
-
-
-# 31. RERSTART the Nginx web server
-# sudo service nginx restart
-
-
-# 36. AUTO renew SSL certificates
-# CRONRENEWSSL="0 0,12 * * * letsencrypt renew >/dev/null 2>&1"
-# (crontab -u $USERNAME -l; echo "$CRONRENEWSSL" ) | crontab -u $USERNAME -
 
 
 # 24. INSTALL MySQL
