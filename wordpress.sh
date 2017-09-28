@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# TODO 1. Prompt for username, password, and server domain
-# TODO 2. Move WordPress plugins into wp-content folder after install
-# TODO 3. Install SSL certificates for HTTPS connection
-# TODO 4. Install HTTP2 server connections
-
 
 DATETIME=`date '+%Y-%m-%d %H:%M:%S'`
 
@@ -195,6 +190,20 @@ sudo sed -i "s/post_max_size = 8M/post_max_size = 64M/g" /etc/php/7.1/fpm/php.in
 echo "Restarting the PHP service..."
 sudo service php7.1-fpm restart
 
+
+# CREATE a self-signed SSL certificate
+
+{
+  echo "US";
+  echo "Oregon";
+  echo "Medford";
+  echo "Seeds Creative Services, LLC";
+  echo "Seeds Creative Services, LLC";
+  echo "$SITEURL";
+  echo "$WPEMAIL";
+} | sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$DBNAME.key -out /etc/ssl/certs/$DBNAME.crt
+
+# TODO
 
 # 26. CONFIGURE a "catch-all" server block
 #  A. REMOVE default Nginx server blocks
