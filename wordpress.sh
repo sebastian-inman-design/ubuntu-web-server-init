@@ -5,34 +5,39 @@
 # TODO 3. Install SSL certificates for HTTPS connection
 # TODO 4. Install HTTP2 server connections
 
+
 DATETIME=`date '+%Y-%m-%d %H:%M:%S'`
-
-SEED_NAME="Seeds Creative Services"
-SEED_TITLE="$SEED_NAME - WordPress Installation"
-
-DEFAULT_URL="fbguesswho.com"
-DEFAULT_NAME="Sebastian Inman"
-DEFAULT_EMAIL="sebastian@seedscs.com"
-DEFAULT_USERNAME="sebastian"
-DEFAULT_PASSWORD="pa55word1"
-
-USERNAME=$DEFAULT_USERNAME
-PASSWORD=$DEFAULT_PASSWORD
-
-SITEURL=$DEFAULT_URL
-SITETITLE=$SEED_TITLE
-SITEADMIN=$DEFAULT_EMAIL
-
-DBNAME="wordpress"
-DBUSERNAME=$DEFAULT_USERNAME
-DBPASSWORD=$DEFAULT_PASSWORD
-
-WPEMAIL=$DEFAULT_EMAIL
-WPUSERNAME=$DEFAULT_USERNAME
-WPPASSWORD=$(openssl passwd -1 "$DEFAULT_PASSWORD")
 
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
+
+while true; do
+  read -p "Enter your username: " PROMPTUSERNAME
+  USERNAME=$PROMPTUSERNAME
+  DBUSERNAME=$PROMPTUSERNAME
+  WPUSERNAME=$PROMPTUSERNAME
+done
+
+
+while true; do
+  read -p "Enter your email address: " PROMPTEMAIL
+  WPEMAIL=$PROMPTEMAIL
+done
+
+
+while true; do
+  read -p "Enter your password: " PROMPTPASSWORD
+  USERNAME=$PROMPTPASSWORD
+  DBPASSWORD=$PROMPTPASSWORD
+  WPPASSWORD=$(openssl passwd -1 "$PROMPTPASSWORD")
+done
+
+
+while true; do
+  read -p "Enter the domain for this server: " PROMPTDOMAIN
+  SITEURL=$PROMPTDOMAIN
+  DBNAME="${$PROMPTDOMAIN/./_}"
+done
 
 
 # 1. UPDATE server hostname
@@ -296,19 +301,6 @@ sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbuser/$DBUSERNAME/g" $SCRIPTPATH/wp-config.php
 sudo sed -i "s/temp_dbpass/$DBPASSWORD/g" $SCRIPTPATH/wp-config.php
 sudo mv $SCRIPTPATH/wp-config.php /home/$USERNAME/$SITEURL/public/wp-config.php
-
-
-# 32. CREATE and CONFIGURE the WordPress database
-# sudo sed -i "s/temp_dbname/$DBNAME/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_blogname/$SEED_NAME/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_blogtitle/$SEED_TITLE/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_siteurl/$SITEURL/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_wpemail/$WPEMAIL/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_wpname/$DEFAULT_NAME/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_wpusername/$WPUSERNAME/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_wppassword/$WPPASSWORD/g" $SCRIPTPATH/database/wordpress.sql
-# sudo sed -i "s/temp_datetime/$DATETIME/g" $SCRIPTPATH/database/wordpress.sql
-# mysql --verbose -u $DBUSERNAME -p$DBPASSWORD < $SCRIPTPATH/database/wordpress.sql
 
 
 # 35. REPLACE WordPress branding with custom branding
