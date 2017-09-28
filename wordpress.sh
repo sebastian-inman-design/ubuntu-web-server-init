@@ -82,7 +82,7 @@ sudo apt install expect -y
 # 7. CREATE new server user
 echo "Creating new system user: $USERNAME..."
 sudo adduser --disabled-password --gecos "" $USERNAME
-echo "$USERNAME:$PASSWORD" | sudo chpasswd
+echo $PASSWORD | passwd $USERNAME
 
 
 # 8. add user to sudo group
@@ -99,8 +99,8 @@ sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 
 # 9. DISABLE root login via SSH
-echo "Disabling root login to server..."
-sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
+# echo "Disabling root login to server..."
+# sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 
 
 # 10. RESTART the SSH server
