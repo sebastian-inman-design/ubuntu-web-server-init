@@ -11,6 +11,20 @@ DATETIME=`date '+%Y-%m-%d %H:%M:%S'`
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 
+USERNAME=""
+DBUSERNAME=USERNAME
+WPUSERNAME=USERNAME
+
+EMAIL=""
+WPEMAIL=EMAIL
+
+PASSWORD=""
+DBPASSWORD=PASSWORD
+WPPASSWORD=PASSWORD
+
+DBNAME=""
+SITEURL=""
+
 echo "";
 read -p "Enter your username: " PROMPTUSERNAME
 USERNAME=$PROMPTUSERNAME
@@ -33,7 +47,7 @@ WPPASSWORD=$(openssl passwd -1 "$PROMPTPASSWORD")
 echo "";
 read -p "Enter the domain for this server: " PROMPTDOMAIN
 SITEURL=$PROMPTDOMAIN
-DBNAME="${$PROMPTDOMAIN/./_}"
+DBNAME="${PROMPTDOMAIN//.}"
 
 
 echo "";
