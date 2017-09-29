@@ -221,7 +221,8 @@ ConfigureMySQL() {
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
   # Run the installer MySQL query
-  mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/databases/installer.sql" > $SCRIPT_FOLDER/installer.log 2>&1
+  # TODO mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/databases/installer.sql" > $SCRIPT_FOLDER/installer.log 2>&1
+  mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/databases/installer.sql"
 }
 
 
