@@ -202,7 +202,7 @@ InstallMySQL() {
 
 
 ConfigureMySQL() {
-  echo "    Configuring MySQL databases..."
+  echo "Configuring MySQL databases..."
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
@@ -219,7 +219,7 @@ RestartPHPService() {
 
 
 InstallNginx() {
-  echo "    Installing the Nginx server..."
+  echo "Installing the Nginx server..."
   # Download the most recent Nginx repository
   sudo add-apt-repository -y ppa:nginx/development > /dev/null
   # Check for package updates
@@ -232,7 +232,7 @@ InstallNginx() {
 
 
 ConfigureNginx() {
-  echo "    Configuring the Nginx server to host $SITE_DOMAIN..."
+  echo "Configuring the Nginx server to host $SITE_DOMAIN..."
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
@@ -255,7 +255,7 @@ RestartNginxService() {
 
 
 ConfigureWebServer() {
-  echo "    Configuring the $SITE_DOMAIN server block..."
+  echo "Configuring the $SITE_DOMAIN server block..."
   # Create web server directories
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
@@ -289,7 +289,7 @@ ConfigureServerBlock() {
   # Create a symlink to the server-block conf file
   sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN
   # Install a self-signed SSL certificate (if domain is set)
-  if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
+  # TODO if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
   # Restart the Nginx web server
   RestartNginxService
 }
@@ -308,7 +308,7 @@ InstallSSLCertificate() {
 
 
 InstallWordPress() {
-  echo "    Downloading and installing the latest WordPress build..."
+  echo "Downloading and installing the latest WordPress build..."
   # Download the latest version of WordPress
   curl -s -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
