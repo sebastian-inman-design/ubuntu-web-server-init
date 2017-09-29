@@ -80,9 +80,10 @@ PromptSettings() {
 
 
 AddSystemUser() {
-  sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password
-  echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd
-  sudo usermod -aG sudo $USERNAME
+  echo "Creating new user '$USERNAME'..."
+  sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > /dev/null
+  echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > /dev/null
+  sudo usermod -aG sudo $USERNAME > /dev/null
   sudo mkdir -p /home/$USERNAME
   sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
 }
@@ -106,7 +107,7 @@ ConfigureSystem() {
   hostname -F /etc/hostname
   # Set the servers local timezone to PST
   echo "America/Los_Angeles" > /etc/timezone
-  dpkg-reconfigure -f noninteractive tzdata
+  dpkg-reconfigure -f noninteractive tzdata > /dev/null
   # Update the current time variable
   CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
   # Check for package updates
