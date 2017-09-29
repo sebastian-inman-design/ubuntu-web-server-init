@@ -32,6 +32,7 @@ Welcome() {
   echo ""
 
   read -n 1 -s -r -p "Press any key to begin the installation process..."
+  echo ""
   StartInstaller
 
 }
