@@ -67,7 +67,7 @@ PromptSettings() {
   if [[ -n "$PROMPT_DOMAIN" ]]; then
     ISSET_DOMAIN="true"
     SITE_DOMAIN=$PROMPT_DOMAIN
-    DATABASE="${SITE_DOMAIN//.}"
+    DATABASE="${SITE_DOMAIN/_/.}"
     SERVER_NAMES="$IPADDRESS $SITE_DOMAIN www.$SITE_DOMAIN"
   else
     ISSET_DOMAIN="false"
@@ -201,14 +201,12 @@ InstallMySQL() {
 
 ConfigureMySQL() {
   echo -e "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring MySQL databases..."
-  # Configure the local MySQL configuration
-  # echo "$MYSQL_PASSWORD" | mysql_config_editor set --login-path=local --host=localhost --user=$USERNAME --password
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
   # Run the installer MySQL query
-  mysql -u$USERNAME -p$MYSQL_PASSWORD -e < $SCRIPT_FOLDER/databases/installer.sql > $SCRIPT_FOLDER/installer.log 2>&1
+  mysql -u $USERNAME -p$MYSQL_PASSWORD -Bse < "$SCRIPT_FOLDER/databases/installer.sql" > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
