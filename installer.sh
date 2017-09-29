@@ -228,7 +228,7 @@ ConfigureMySQL() {
   sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /home/$USERNAME/.my.cnf
   sudo chmod 600 /home/$USERNAME/.my.cnf
   # Run the installer MySQL query
-  mysql --defaults-extra-file=/home/$USERNAME/.my.cnf < "$SCRIPT_FOLDER/mysql/installer.sql"
+  sudo mysql --defaults-extra-file=/home/$USERNAME/.my.cnf < "$SCRIPT_FOLDER/mysql/installer.sql"
 }
 
 
