@@ -10,4 +10,5 @@ ISSET_DOMAIN="false"
 CLR_RESET='\e[0m'
 CLR_WHITE='\e[0;37m'
 CLR_GREEN='\e[0;32m'
+CLR_YELLOW='\e[0;33m'
 CLR_CYAN='\e[4;36m'
