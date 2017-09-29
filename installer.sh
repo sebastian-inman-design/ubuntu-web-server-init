@@ -321,7 +321,7 @@ InstallSSLCertificate() {
   # Install the Certbot package
   sudo apt-get install -y python-certbot-nginx > $SCRIPT_FOLDER/installer.log 2>&1
   # Generate the SSL certificates
-  sudo certbot --nginx -d $SITE_DOMAIN -d www.$SITE_DOMAIN
+  echo "$USER_EMAIL a n" | sudo certbot --nginx -d $SITE_DOMAIN -d www.$SITE_DOMAIN > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
