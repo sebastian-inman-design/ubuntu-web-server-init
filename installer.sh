@@ -5,7 +5,7 @@ SCRIPT_FILE=$(readlink -f "$0")
 SCRIPT_FOLDER=$(dirname "$SCRIPT_FILE")
 
 # Import config file settings
-source $SCRIPT_FOLDER/installer.conf
+source $SCRIPT_FOLDER/config
 
 # Make random user and MySQL passwords
 USER_PASSWORD=$(openssl rand -base64 12)
@@ -203,9 +203,9 @@ ConfigureNginx() {
   # Backup the original Nginx config file
   sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.bkp
   # Update temp variables in new Nginx config file
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx.conf
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/nginx.conf
   # Move the configured Nginx config file
-  sudo mv -v $SCRIPT_FOLDER/nginx.conf /etc/nginx/nginx.conf
+  sudo mv -v $SCRIPT_FOLDER/nginx/nginx.conf /etc/nginx/nginx.conf
   # Configure the server block
   ConfigureServerBlock
   # Restart the Nginx web server
@@ -229,8 +229,8 @@ ConfigureWebServer() {
   sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/access.log
   sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/errors.log
   # Move favicon and robots file into public directory
-  sudo mv -v $SCRIPT_FOLDER/robots.txt /home/$USERNAME/$SITE_DOMAIN/public/robots.txt
-  sudo mv -v $SCRIPT_FOLDER/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico
+  sudo mv -v $SCRIPT_FOLDER/assets/robots.txt /home/$USERNAME/$SITE_DOMAIN/public/robots.txt
+  sudo mv -v $SCRIPT_FOLDER/assets/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico
   # Update permissions of the web directory
   sudo chmod -R 755 /home/$USERNAME/$SITE_DOMAIN
   sudo chown -R $USERNAME:$USERNAME /run/php
@@ -245,11 +245,11 @@ ConfigureServerBlock() {
   sudo rm /etc/nginx/sites-available/default
   sudo rm /etc/nginx/sites-enabled/default
   # Update temp variables in the server-block conf files
-  sudo sed -i "s/%SERVER_NAMES%/$SERVER_NAMES/g" $SCRIPT_FOLDER/server-block.conf
-  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/server-block.conf
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/server-block.conf
+  sudo sed -i "s/%SERVER_NAMES%/$SERVER_NAMES/g" $SCRIPT_FOLDER/nginx/server-block.conf
+  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/nginx/server-block.conf
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/server-block.conf
   # Move the server-block conf file into the Nginx directory
-  sudo mv -v $SCRIPT_FOLDER/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN
+  sudo mv -v $SCRIPT_FOLDER/nginx/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN
   # Create a symlink to the server-block conf file
   sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN
   # Install a self-signed SSL certificate (if domain is set)
@@ -289,11 +289,11 @@ InstallWordPress() {
 
 ConfigureWordPress() {
   # Update temp variables in the wp-config file
-  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wp-config.php
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wp-config.php
-  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/wp-config.php
+  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
+  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   # Move the configured wp-config file
-  sudo mv -v $SCRIPT_FOLDER/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
+  sudo mv -v $SCRIPT_FOLDER/wordpress/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
   # Install default WordPress plugins
   InsallWordPressPlugins
 }
@@ -303,7 +303,7 @@ InsallWordPressPlugins() {
   # Delete any existing WordPress plugins
   sudo rm -r /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/*
   # Install default WordPress plugins
-  for plugin in $SCRIPT_FOLDER/wp-plugins/*.zip; do
+  for plugin in $SCRIPT_FOLDER/wordpress/wp-plugins/*.zip; do
     unzip "$plugin" -d /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/
   done
 }
