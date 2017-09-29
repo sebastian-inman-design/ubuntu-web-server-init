@@ -222,9 +222,9 @@ ConfigureMySQL() {
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/mysql/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/mysql/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/installer.sql
-  # Update temp variables in the .my.conf file
-  sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.conf
-  # Move the .my.conf file into the root directory
+  # Update temp variables in the .my.cnf file
+  sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.cnf
+  # Move the .my.cnf file into the root directory
   sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /root/.my.cnf
   # Run the installer MySQL query
   # TODO mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/mysql/installer.sql" > $SCRIPT_FOLDER/installer.log 2>&1
