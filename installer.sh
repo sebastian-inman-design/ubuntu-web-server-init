@@ -39,6 +39,7 @@ Welcome() {
   # echo ""
 
   echo ""
+  echo -e "${CLR_RESET}"
   echo -e "${CLR_RED}         MMMMMMM  MMMMMMMMMM"
   echo -e "${CLR_RED}           MMMMMMM  MMMMMMMMMM"
   echo -e "${CLR_RED}           MMMMMMMM  MMMMMMMMM      ${CLR_RESET}Highway Products, Inc. WordPress Installer"
@@ -49,6 +50,7 @@ Welcome() {
   echo -e "${CLR_RED}    MMMMMMMMMMMM   MMMMMMMMMMMM     ${CLR_RESET}build of WordPress."
   echo -e "${CLR_RED}  MMMMMMMMMMMMM   MMMMMMMMMMMM"
   echo -e "${CLR_RED}MMMMMMMMMMMMMM   MMMMMMMMMMMMM"
+  echo -e "${CLR_RESET}"
   echo ""
   echo ""
 
