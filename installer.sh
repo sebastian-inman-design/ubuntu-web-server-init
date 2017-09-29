@@ -1,21 +1,19 @@
 #!/bin/bash
 
-REAL_NAME=""
-USERNAME=""
-USER_EMAIL=""
-SITE_DOMAIN=""
-DATABASE=""
-SERVER_NAMES=""
-
-USER_PASSWORD=$(openssl rand -base64 12)
-MYSQL_PASSWORD=$(openssl rand -base64 12)
-
-IP_ADDRESS=$(curl http://icanhazip.com)
-CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
+# Set script directory
 SCRIPT_FILE=$(readlink -f "$0")
 SCRIPT_FOLDER=$(dirname "$SCRIPT_FILE")
 
-ISSET_DOMAIN="false"
+# Import config file settings
+source $SCRIPT_FOLDER/installer.conf
+
+# Make random user and MySQL passwords
+USER_PASSWORD=$(openssl rand -base64 12)
+MYSQL_PASSWORD=$(openssl rand -base64 12)
+
+# Fetch IP address and local time
+IP_ADDRESS=$(curl http://icanhazip.com)
+CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
 PromptSettings() {
   # Prompt user for their full name
@@ -31,9 +29,12 @@ PromptSettings() {
   read -p "Enter your email address: " PROMPT_EMAIL
   USER_EMAIL=$PROMPT_EMAIL
   # Prompt user for their password
-  # echo ""
-  # read -p "Enter your password: " PROMPT_PASSWORD
-  # USER_PASSWORD=$PROMPT_PASSWORD
+  if [[ SECURE_INSTALL = "false" ]]; then
+    echo ""
+    read -p "Enter your password: " PROMPT_PASSWORD
+    USER_PASSWORD=$PROMPT_PASSWORD
+    MYSQL_PASSWORD=$USER_PASSWORD
+  fi
   # Prompt user for the servers domain name
   echo ""
   read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
@@ -80,6 +81,8 @@ ConfigureSystem() {
   # Set the servers local timezone to PST
   echo "America/Los_Angeles" > /etc/timezone
   dpkg-reconfigure -f noninteractive tzdata
+  # Update the current time variable
+  CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
   # Check for package updates
   UpdatePackages
   # Install package updates
