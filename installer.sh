@@ -54,7 +54,7 @@ Welcome() {
   echo ""
   echo ""
 
-  read -n 1 -s -r -p "Press any key to begin the installation process..."
+  read -n 1 -s -r -p "Press any key to begin the installation process ..."
   echo ""
   StartInstaller
 
@@ -98,7 +98,7 @@ PromptSettings() {
 
 
 AddSystemUser() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Creating new user '$USERNAME'..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Creating new user '$USERNAME' ..."
   sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > $SCRIPT_FOLDER/installer.log 2>&1
   echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > $SCRIPT_FOLDER/installer.log 2>&1
   sudo usermod -aG sudo $USERNAME > $SCRIPT_FOLDER/installer.log 2>&1
@@ -108,13 +108,13 @@ AddSystemUser() {
 
 
 UpdatePackages() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Checking for package updates..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Checking for package updates ..."
   sudo apt-get update > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
 InstallUpdates() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Installing package updates..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Installing package updates ..."
   sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
@@ -150,7 +150,7 @@ ConfigureSystem() {
 
 
 InstallDependencies() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Installing package dependencies..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Installing package dependencies ..."
   # Install the UFW package
   sudo apt-get install -y ufw > $SCRIPT_FOLDER/installer.log 2>&1
   # Install the unzip package
@@ -167,7 +167,7 @@ InstallDependencies() {
 
 
 ConfigureFirewall() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Configuring firewall..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring firewall ..."
   # Allow SSH through firewall
   sudo ufw allow ssh > $SCRIPT_FOLDER/installer.log 2>&1
   # Allow HTTP through firewall
@@ -180,7 +180,7 @@ ConfigureFirewall() {
 
 
 InstallPHP() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Installing PHP with core modules..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Installing PHP with core modules ..."
   # Download the most recent PHP repository
   sudo add-apt-repository -y ppa:ondrej/php > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
@@ -203,7 +203,7 @@ ConfigurePHP() {
 
 
 InstallMySQL() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Installing MySQL..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Installing MySQL server ..."
   # Check for package updates
   UpdatePackages
   # Configure the MySQL username and password
@@ -217,7 +217,7 @@ InstallMySQL() {
 
 
 ConfigureMySQL() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Configuring MySQL databases..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring MySQL databases ..."
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/mysql/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/mysql/installer.sql
@@ -240,7 +240,7 @@ RestartPHPService() {
 
 
 InstallNginx() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Installing the Nginx server..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Installing the Nginx server ..."
   # Download the most recent Nginx repository
   sudo add-apt-repository -y ppa:nginx/development > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
@@ -253,7 +253,7 @@ InstallNginx() {
 
 
 ConfigureNginx() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Configuring the Nginx server to host $SITE_DOMAIN..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring the Nginx server to host $SITE_DOMAIN ..."
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
@@ -274,7 +274,7 @@ RestartNginxService() {
 
 
 ConfigureWebServer() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Configuring the $SITE_DOMAIN server block..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring the $SITE_DOMAIN server block ..."
   # Create web server directories
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
@@ -325,7 +325,7 @@ InstallSSLCertificate() {
 
 
 InstallWordPress() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Downloading and installing the latest WordPress build..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Downloading and installing the latest WordPress build ..."
   # Download the latest version of WordPress
   curl -s -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
@@ -342,7 +342,7 @@ InstallWordPress() {
 
 
 ConfigureWordPress() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Configuring the WordPress installation..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring the WordPress installation ..."
   # Update temp variables in the wp-config file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
@@ -355,7 +355,7 @@ ConfigureWordPress() {
 
 
 InsallWordPressPlugins() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Installing WordPress plugins..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Installing WordPress plugins ..."
   # Delete any existing WordPress plugins
   sudo rm -r /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/*
   # Install default WordPress plugins
@@ -372,7 +372,7 @@ ConfigureCache() {
 
 
 RestartServices() {
-  echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Restarting system services..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Restarting system services ..."
   # Restart the Redis cache service
   sudo service redis-server restart
   # Restart the PHP service
