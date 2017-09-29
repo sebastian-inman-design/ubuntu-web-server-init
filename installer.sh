@@ -1,43 +1,48 @@
 #!/bin/bash
 
-REALNAME=""
+REAL_NAME=""
 USERNAME=""
-USERMAIL=""
-USERPASS=""
-USERPASSMD5=""
-SITEDOMAIN=""
+USER_EMAIL=""
+USER_PASSWORD=""
+USER_PASSWORDMD5=""
+SITE_DOMAIN=""
+DATABASE=""
 
-IPADDRESS=$(curl http://icanhazip.com)
-CURRENTDATE=`date '+%Y-%m-%d %H:%M:%S'`
-SCRIPTFILE=$(readlink -f "$0")
-SCRIPTFOLDER=$(dirname "$SCRIPTFILE")
+IP_ADDRESS=$(curl http://icanhazip.com)
+CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
+SCRIPT_FILE=$(readlink -f "$0")
+SCRIPT_FOLDER=$(dirname "$SCRIPT_FILE")
+
+ISSET_DOMAIN="false"
 
 PromptSettings() {
   # Prompt user for their full name
-  read -p "Enter your full name: " PROMPTREALNAME
-  REALNAME=$PROMPTREALNAME
+  read -p "Enter your full name: " PROMPT_REAL_NAME
+  REAL_NAME=$PROMPT_REAL_NAME
   echo ""
   # Prompt user for their system username
-  read -p "Enter your username: " PROMPTUSERNAME
-  USERNAME=$PROMPTUSERNAME
+  read -p "Enter your username: " PROMPT_USERNAME
+  USERNAME=$PROMPT_USERNAME
   echo ""
   # Prompt user for their email address
-  read -p "Enter your email address: " PROMPTEMAIL
-  USEREMAIL=$PROMPTEMAIL
+  read -p "Enter your email address: " PROMPT_EMAIL
+  USER_EMAIL=$PROMPT_EMAIL
   echo ""
   # Prompt user for their password
-  read -sp "Enter your password: " PROMPTPASSWORD
-  USERPASS=$PROMPTPASSWORD
-  USERPASSMD5=$(openssl passwd -1 "$USERPASS")
+  read -p "Enter your password: " PROMPT_PASSWORD
+  USER_PASSWORD=$PROMPT_PASSWORD
+  USER_PASSWORDMD5=$(openssl passwd -1 "$USER_PASSWORD")
   echo ""
   # Prompt user for the servers domain name
-  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPTDOMAIN
+  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
   echo ""
-  if [[ -n "$PROMPTDOMAIN" ]]; then
-    SITEDOMAIN=$PROMPTDOMAIN
-    DATABASE="${SITEDOMAIN//.}"
+  if [[ -n "$PROMPT_DOMAIN" ]]; then
+    ISSET_DOMAIN="true"
+    SITE_DOMAIN=$PROMPT_DOMAIN
+    DATABASE="${SITE_DOMAIN//.}"
   else
-    SITEDOMAIN=$IPADDRESS
+    ISSET_DOMAIN="false"
+    SITE_DOMAIN=$IP_ADDRESS
     DATABASE="wordpress"
   fi
   # Add the new user to the system
@@ -47,9 +52,9 @@ PromptSettings() {
 
 AddSystemUser() {
   echo "Adding new system user..."
-  sudo adduser $USERNAME --gecos "$REALNAME,,," --disabled-password
-  echo "$USERNAME:$PASSWORD" | sudo chpasswd
-  usermod -aG sudo $USERNAME
+  sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password
+  echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd
+  sudo usermod -aG sudo $USERNAME
   sudo mkdir -p /home/$USERNAME
   sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
 }
@@ -69,7 +74,7 @@ InstallUpdates() {
 
 ConfigureSystem() {
   # Update the servers hostname to match the domain
-  echo $SITEDOMAIN > /etc/hostname
+  echo $SITE_DOMAIN > /etc/hostname
   hostname -F /etc/hostname
   # Set the servers local timezone to PST
   echo "America/Los_Angeles" > /etc/timezone
@@ -154,8 +159,8 @@ InstallMySQL() {
   # Check for package updates
   UpdatePackages
   # Configure the MySQL username and password
-  echo "mysql-server mysql-server/root_password password $PASSWORD" | sudo debconf-set-selections
-  echo "mysql-server mysql-server/root_password_again password $PASSWORD" | sudo debconf-set-selections
+  echo "mysql-server mysql-server/root_password password $USER_PASSWORD" | sudo debconf-set-selections
+  echo "mysql-server mysql-server/root_password_again password $USER_PASSWORD" | sudo debconf-set-selections
   # Install the MySQL package
   sudo apt install mysql-server -y
   # Configure the MySQL installation
@@ -165,11 +170,11 @@ InstallMySQL() {
 
 ConfigureMySQL() {
   # Update temp variables in the installer MySQL file
-  sudo sed -i "s/temp_database/$DATABASE/g" $SCRIPTFOLDER/database/installer.sql
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPTFOLDER/database/installer.sql
-  sudo sed -i "s/temp_password/$PASSWORD/g" $SCRIPTFOLDER/database/installer.sql
+  sudo sed -i "s/temp_database/$DATABASE/g" $SCRIPT_FOLDER/database/installer.sql
+  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/database/installer.sql
+  sudo sed -i "s/temp_password/$USER_PASSWORD/g" $SCRIPT_FOLDER/database/installer.sql
   # Run the installer MySQL query
-  mysql --verbose -u root -p$PASSWORD < $SCRIPTFOLDER/database/installer.sql
+  mysql --verbose -u root -p$USER_PASSWORD < $SCRIPT_FOLDER/database/installer.sql
 }
 
 
@@ -197,9 +202,9 @@ ConfigureNginx() {
   # Backup the original Nginx config file
   sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.bkp
   # Update temp variables in new Nginx config file
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPTFOLDER/nginx.conf
+  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/nginx.conf
   # Move the configured Nginx config file
-  sudo mv -v $SCRIPTFOLDER/nginx.conf /etc/nginx/nginx.conf
+  sudo mv -v $SCRIPT_FOLDER/nginx.conf /etc/nginx/nginx.conf
   # Configure the server block
   ConfigureServerBlock
   # Restart the Nginx web server
@@ -215,18 +220,18 @@ RestartNginxService() {
 
 ConfigureWebServer() {
   # Create web server directories
-  sudo mkdir -p /home/$USERNAME/$SITEDOMAIN/backups
-  sudo mkdir -p /home/$USERNAME/$SITEDOMAIN/public
-  sudo mkdir -p /home/$USERNAME/$SITEDOMAIN/cache
-  sudo mkdir -p /home/$USERNAME/$SITEDOMAIN/logs
+  sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
+  sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
+  sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/cache
+  sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/logs
   # Create temporary empty log files
-  sudo touch /home/$USERNAME/$SITEDOMAIN/logs/access.log
-  sudo touch /home/$USERNAME/$SITEDOMAIN/logs/errors.log
+  sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/access.log
+  sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/errors.log
   # Move favicon and robots file into public directory
-  sudo mv -v $SCRIPTFOLDER/robots.txt /home/$USERNAME/$SITEDOMAIN/public/robots.txt
-  sudo mv -v $SCRIPTFOLDER/favicon.ico /home/$USERNAME/$SITEDOMAIN/public/favicon.ico
+  sudo mv -v $SCRIPT_FOLDER/robots.txt /home/$USERNAME/$SITE_DOMAIN/public/robots.txt
+  sudo mv -v $SCRIPT_FOLDER/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico
   # Update permissions of the web directory
-  sudo chmod -R 755 /home/$USERNAME/$SITEDOMAIN
+  sudo chmod -R 755 /home/$USERNAME/$SITE_DOMAIN
   # Install WordPress into the public web directory
   InstallWordPress
 }
@@ -237,29 +242,29 @@ ConfigureServerBlock() {
   sudo rm /etc/nginx/sites-available/default
   sudo rm /etc/nginx/sites-enabled/default
   # Update temp variables in the server-block conf files
-  sudo sed -i "s/temp_ipaddress/$IPADDRESS/g" $SCRIPTFOLDER/server-block.conf
-  sudo sed -i "s/temp_sitedomain/$SITEDOMAIN/g" $SCRIPTFOLDER/server-block.conf
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPTFOLDER/server-block.conf
+  sudo sed -i "s/temp_IP_ADDRESS/$IP_ADDRESS/g" $SCRIPT_FOLDER/server-block.conf
+  sudo sed -i "s/temp_SITE_DOMAIN/$SITE_DOMAIN/g" $SCRIPT_FOLDER/server-block.conf
+  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/server-block.conf
   # Move the server-block conf file into the Nginx directory
-  sudo mv -v $SCRIPTFOLDER/server-block.conf /etc/nginx/sites-available/$SITEDOMAIN
+  sudo mv -v $SCRIPT_FOLDER/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN
   # Create a symlink to the server-block conf file
-  sudo ln -s /etc/nginx/sites-available/$SITEDOMAIN /etc/nginx/sites-enabled/$SITEDOMAIN
-  # Install a self-signed SSL certificate
-  InstallSSLCertificate
+  sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN
+  # Install a self-signed SSL certificate (if domain is set)
+  if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
+  # Restart the Nginx web server
+  RestartNginxService
 }
 
 
 InstallSSLCertificate() {
   # Generate a self-signed SSL certificate
-  echo "$USEREMAIL" | sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITEDOMAIN/public -d $SITEDOMAIN
+  echo "$USER_EMAIL" | sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITE_DOMAIN/public -d $SITE_DOMAIN
   # Replace the default port 80 with port 443
-  sudo sed -i "s/80; /443 ssl http2;/g" /etc/nginx/sites-available/$SITEDOMAIN
+  sudo sed -i "s/80; /443 ssl http2;/g" /etc/nginx/sites-available/$SITE_DOMAIN
   # Uncomment the SSL certificate paths from the server block
-  sudo sed -i "s/#config //g" /etc/nginx/sites-available/$SITEDOMAIN
+  sudo sed -i "s/#config //g" /etc/nginx/sites-available/$SITE_DOMAIN
   # Uncomment the SSL certificate parameters from the Nginx config
   sudo sed -i "s/#config //g" /etc/nginx/nginx.conf
-  # Restart the Nginx web server
-  RestartNginxService
 }
 
 
@@ -271,7 +276,7 @@ InstallWordPress() {
   # Delete the WordPress zip file
   sudo rm /home/$USERNAME/wordpress.zip
   # Install the WordPress download
-  sudo mv -v /home/$USERNAME/wordpress/* /home/$USERNAME/$SITEDOMAIN/public
+  sudo mv -v /home/$USERNAME/wordpress/* /home/$USERNAME/$SITE_DOMAIN/public
   # Delete the WordPress download directory
   sudo rm -rf /home/$USERNAME/wordpress
   # Configure the WordPress installation
@@ -281,11 +286,11 @@ InstallWordPress() {
 
 ConfigureWordPress() {
   # Update temp variables in the wp-config file
-  sudo sed -i "s/temp_database/$DATABASE/g" $SCRIPTFOLDER/wp-config.php
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPTFOLDER/wp-config.php
-  sudo sed -i "s/temp_password/$PASSWORD/g" $SCRIPTFOLDER/wp-config.php
+  sudo sed -i "s/temp_database/$DATABASE/g" $SCRIPT_FOLDER/wp-config.php
+  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/wp-config.php
+  sudo sed -i "s/temp_password/$USER_PASSWORD/g" $SCRIPT_FOLDER/wp-config.php
   # Move the configured wp-config file
-  sudo mv -v $SCRIPTFOLDER/wp-config.php /home/$USERNAME/$SITEDOMAIN/public/wp-config.php
+  sudo mv -v $SCRIPT_FOLDER/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
   # Install default WordPress plugins
   InsallWordPressPlugins
 }
@@ -293,10 +298,10 @@ ConfigureWordPress() {
 
 InsallWordPressPlugins() {
   # Delete any existing WordPress plugins
-  sudo rm -r /home/$USERNAME/$SITEDOMAIN/public/wp-content/plugins/*
+  sudo rm -r /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/*
   # Install default WordPress plugins
-  for plugin in $SCRIPTFOLDER/wp-plugins/*.zip; do
-    unzip "$plugin" -d /home/$USERNAME/$SITEDOMAIN/public/wp-content/plugins/
+  for plugin in $SCRIPT_FOLDER/wp-plugins/*.zip; do
+    unzip "$plugin" -d /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/
   done
 }
 
