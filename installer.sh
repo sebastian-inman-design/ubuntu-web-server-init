@@ -3,13 +3,12 @@
 REAL_NAME=""
 USERNAME=""
 USER_EMAIL=""
-USER_PASSWORD=""
-USER_PASSWORDMD5=""
 SITE_DOMAIN=""
 DATABASE=""
 SERVER_NAMES=""
 
-MYSQL_PASSWORD=$(openssl rand -base64 32)
+USER_PASSWORD=$(openssl rand -base64 12)
+MYSQL_PASSWORD=$(openssl rand -base64 12)
 
 IP_ADDRESS=$(curl http://icanhazip.com)
 CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
@@ -32,10 +31,9 @@ PromptSettings() {
   read -p "Enter your email address: " PROMPT_EMAIL
   USER_EMAIL=$PROMPT_EMAIL
   # Prompt user for their password
-  echo ""
-  read -p "Enter your password: " PROMPT_PASSWORD
-  USER_PASSWORD=$PROMPT_PASSWORD
-  USER_PASSWORDMD5=$(openssl passwd -1 "$USER_PASSWORD")
+  # echo ""
+  # read -p "Enter your password: " PROMPT_PASSWORD
+  # USER_PASSWORD=$PROMPT_PASSWORD
   # Prompt user for the servers domain name
   echo ""
   read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
@@ -172,7 +170,7 @@ ConfigureMySQL() {
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/database/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/database/installer.sql
-  sudo sed -i "s/%USER_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/database/installer.sql
+  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/database/installer.sql
   # Run the installer MySQL query
   mysql --verbose -u root -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/database/installer.sql
 }
@@ -327,6 +325,7 @@ StartInstaller() {
   ConfigureCache
 
   echo "Installation complete!"
+  echo "Your server password is: $USER_PASSWORD"
   echo "Your MySQL password is: $MYSQL_PASSWORD"
 
 }
