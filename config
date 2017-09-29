@@ -8,6 +8,7 @@ SECURE_INSTALL="true"
 ISSET_DOMAIN="false"
 
 CLR_RESET='\e[0m'
+CLR_RED='\e[0;31m'
 CLR_WHITE='\e[0;37m'
 CLR_GREEN='\e[0;32m'
 CLR_YELLOW='\e[0;33m'
