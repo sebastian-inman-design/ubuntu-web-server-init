@@ -17,18 +17,20 @@ CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
 
 Welcome() {
+  clear
   echo ""
-  echo "EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
-  echo "EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
-  echo "EEEE                              EEEE    Welcome to the Seeds CS WordPress Installer!"
-  echo "EEEE                              EEEE    Created by Sebastian Inman <sebastian@seedscs.com>"
-  echo "EEEEEEEEEEEE              EEEEEEEEEEEE"
-  echo "EEEEEEEEEEEE              EEEEEEEEEEEE    This script will automatically install and configure"
-  echo "EEEE                              EEEE    a full-featured Nginx server with PHP, MySQL, fail2ban"
-  echo "EEEE                              EEEE    and many other common packages. It will then install the"
-  echo "EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE    latest version of WordPress."
-  echo "EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
-  echo ""
+  echo -e "${COLOR_RESET}"
+  echo -e "${COLOR_GREEN}    EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
+  echo -e "${COLOR_GREEN}    EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
+  echo -e "${COLOR_GREEN}    EEEE                              EEEE    Welcome to the Seeds CS WordPress Installer!"
+  echo -e "${COLOR_GREEN}    EEEE                              EEEE    Created by Sebastian Inman <sebastian@seedscs.com>"
+  echo -e "${COLOR_GREEN}    EEEEEEEEEEEE              EEEEEEEEEEEE"
+  echo -e "${COLOR_GREEN}    EEEEEEEEEEEE              EEEEEEEEEEEE    This script will automatically install and configure"
+  echo -e "${COLOR_GREEN}    EEEE                              EEEE    a full-featured Nginx server with PHP, MySQL, fail2ban"
+  echo -e "${COLOR_GREEN}    EEEE                              EEEE    and many other common packages. It will then install the"
+  echo -e "${COLOR_GREEN}    EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE    latest version of WordPress."
+  echo -e "${COLOR_GREEN}    EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
+  echo -e "${COLOR_RESET}"
   echo ""
 
   read -n 1 -s -r -p "Press any key to begin the installation process..."
