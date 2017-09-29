@@ -90,9 +90,11 @@ if ( !defined('ABSPATH') )
 
 /* Define SFTP login credentials */
 
-define('FTP_HOST', 'localhost');
-define('FTP_USER', '%USERNAME%');
-define('FTP_PASS', '%SSH_PASSWORD%');
+define('FS_METHOD', 'ssh');
+define('FTP_BASE',  '/home/%USERNAME%/%SITE_DOMAIN%/public');
+define('FTP_HOST',  'localhost:22');
+define('FTP_USER',  '%USERNAME%');
+define('FTP_PASS',  '%SSH_PASSWORD%');
 
 
 /** Sets up WordPress vars and included files. */

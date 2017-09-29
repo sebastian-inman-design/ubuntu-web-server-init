@@ -345,6 +345,7 @@ ConfigureWordPress() {
   # Update temp variables in the wp-config file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
+  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%SSH_PASSWORD%/$SSH_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   # Move the configured wp-config file
