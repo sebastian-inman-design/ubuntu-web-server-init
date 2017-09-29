@@ -201,12 +201,14 @@ InstallMySQL() {
 
 ConfigureMySQL() {
   echo -e "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring MySQL databases..."
+  # Configure the local MySQL configuration
+  mysql_config_editor set --login-path=local --host=localhost --user=$USERNAME --password=$MYSQL_PASSWORD
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
   # Run the installer MySQL query
-  mysql -f -s -uroot -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
+  mysql --login-path=local < $SCRIPT_FOLDER/databases/installer.sql
 }
 
 
