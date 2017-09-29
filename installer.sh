@@ -37,6 +37,7 @@ PromptSettings() {
   # Prompt user for the servers domain name
   echo ""
   read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
+  echo ""
   if [[ -n "$PROMPT_DOMAIN" ]]; then
     ISSET_DOMAIN="true"
     SITE_DOMAIN=$PROMPT_DOMAIN
@@ -232,6 +233,8 @@ ConfigureWebServer() {
   sudo mv -v $SCRIPT_FOLDER/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico
   # Update permissions of the web directory
   sudo chmod -R 755 /home/$USERNAME/$SITE_DOMAIN
+  sudo chown -R $USERNAME:$USERNAME /run/php
+  sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/$SITE_DOMAIN
   # Install WordPress into the public web directory
   InstallWordPress
 }
