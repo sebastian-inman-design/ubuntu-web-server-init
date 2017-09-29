@@ -40,7 +40,7 @@ Welcome() {
 
   echo ""
   echo -e "${CLR_RESET}"
-  echo -e "${CLR_RED}         MMMMMMM  MMMMMMMMMM"
+  echo -e "${CLR_RED}          MMMMMMM  MMMMMMMMMM"
   echo -e "${CLR_RED}           MMMMMMM  MMMMMMMMMM"
   echo -e "${CLR_RED}           MMMMMMMM  MMMMMMMMM      ${CLR_RESET}Highway Products, Inc. WordPress Installer"
   echo -e "${CLR_RED}           MMMMMMMM  MMMMMMMMMM     ${CLR_RESET}By Sebastian Inman ${CLR_CYAN}sebastian.inman@highwayproducts.com"
@@ -222,12 +222,12 @@ ConfigureMySQL() {
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/mysql/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/mysql/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/installer.sql
-  # Update temp variables in the mysql.conf file
-  sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/mysql.conf
-  # Move the mysql.conf file into the etc directory
-  sudo mv $SCRIPT_FOLDER/mysql/mysql.conf /etc/my.cnf
+  # Update temp variables in the .my.cnf file
+  sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.cnf
+  # Move the .my.cnf file into the etc directory
+  sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /home/$USERNAME/my.cnf
   # Run the installer MySQL query
-  mysql --defaults-file=/etc/my.cnf < "$SCRIPT_FOLDER/mysql/installer.sql"
+  mysql --defaults-extra-file=/home/$USERNAME/my.cnf < "$SCRIPT_FOLDER/mysql/installer.sql"
 }
 
 
