@@ -108,6 +108,8 @@ InstallDependencies() {
   sudo apt install unzip -y
   # Install the Fail2Ban package
   sudo apt install fail2ban -y
+  # Install the libpcre3 package
+  sudo apt install libpcre3 -y
   # Install the LetsEncrypt package
   sudo apt install letsencrypt -y
   # Install Redis cache packages
