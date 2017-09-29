@@ -87,5 +87,13 @@ define('DISABLE_WP_CRON', true);
 if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
 
+
+/* Define SFTP login credentials */
+
+define('FTP_HOST', 'localhost');
+define('FTP_USER', '%USERNAME%');
+define('FTP_PASS', '%SSH_PASSWORD%');
+
+
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
