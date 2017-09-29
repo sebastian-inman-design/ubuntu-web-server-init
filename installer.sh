@@ -402,6 +402,8 @@ StartInstaller() {
   echo -e "${CLR_GREEN}Completed installation in $(($ELAPSED_TIME/60)) minutes and $(($ELAPSED_TIME%60)) seconds!"
   echo -e "${CLR_RESET}"
 
+  echo "Server IP Address: $IP_ADDRESS" >> $SCRIPT_FOLDER/credentials.log
+  echo ""
   echo "SSH Username: $USERNAME" >> $SCRIPT_FOLDER/credentials.log
   echo "SSH Password: $SSH_PASSWORD" >> $SCRIPT_FOLDER/credentials.log
   echo "" >> $SCRIPT_FOLDER/credentials.log
