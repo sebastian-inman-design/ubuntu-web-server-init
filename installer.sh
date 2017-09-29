@@ -15,6 +15,28 @@ MYSQL_PASSWORD=$(openssl rand -base64 12)
 IP_ADDRESS=$(curl http://icanhazip.com)
 CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
+
+Welcome() {
+  echo ""
+  echo "EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
+  echo "EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
+  echo "EEEE                              EEEE    Welcome to the Seeds CS WordPress Installer!"
+  echo "EEEE                              EEEE    Created by Sebastian Inman <sebastian@seedscs.com>"
+  echo "EEEEEEEEEEEE              EEEEEEEEEEEE"
+  echo "EEEEEEEEEEEE              EEEEEEEEEEEE    This script will automatically install and configure"
+  echo "EEEE                              EEEE    a full-featured Nginx server with PHP, MySQL, fail2ban"
+  echo "EEEE                              EEEE    and many other common packages. It will then install the"
+  echo "EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE    latest version of WordPress."
+  echo "EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
+  echo ""
+  echo ""
+
+  read -n 1 -s -r -p "Press any key to begin the installation process..."
+  StartInstaller
+
+}
+
+
 PromptSettings() {
   # Prompt user for their full name
   echo ""
@@ -326,11 +348,9 @@ StartInstaller() {
   ConfigureSystem
   ConfigureWebServer
   ConfigureCache
-
   echo "Installation complete!"
   echo "Your server password is: $USER_PASSWORD"
   echo "Your MySQL password is: $MYSQL_PASSWORD"
-
 }
 
-StartInstaller
+Welcome
