@@ -9,6 +9,8 @@ SITE_DOMAIN=""
 DATABASE=""
 SERVER_NAMES=""
 
+MYSQL_PASSWORD=$(openssl rand -base64 32)
+
 IP_ADDRESS=$(curl http://icanhazip.com)
 CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 SCRIPT_FILE=$(readlink -f "$0")
@@ -160,8 +162,8 @@ InstallMySQL() {
   # Check for package updates
   UpdatePackages
   # Configure the MySQL username and password
-  echo "mysql-server mysql-server/root_password password $USER_PASSWORD" | sudo debconf-set-selections
-  echo "mysql-server mysql-server/root_password_again password $USER_PASSWORD" | sudo debconf-set-selections
+  echo "mysql-server mysql-server/root_password password $MYSQL_PASSWORD" | sudo debconf-set-selections
+  echo "mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD" | sudo debconf-set-selections
   # Install the MySQL package
   sudo apt install mysql-server -y
   # Configure the MySQL installation
@@ -173,9 +175,9 @@ ConfigureMySQL() {
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/database/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/database/installer.sql
-  sudo sed -i "s/%USER_PASSWORD%/$USER_PASSWORD/g" $SCRIPT_FOLDER/database/installer.sql
+  sudo sed -i "s/%USER_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/database/installer.sql
   # Run the installer MySQL query
-  mysql --verbose -u root -p$USER_PASSWORD < $SCRIPT_FOLDER/database/installer.sql
+  mysql --verbose -u root -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/database/installer.sql
 }
 
 
@@ -326,6 +328,10 @@ StartInstaller() {
   ConfigureSystem
   ConfigureWebServer
   ConfigureCache
+
+  echo "Installation complete!"
+  echo "Your MySQL password is: $MYSQL_PASSWORD"
+
 }
 
 StartInstaller
