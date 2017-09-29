@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 REALNAME=""
 USERNAME=""
 USERMAIL=""
@@ -13,25 +12,29 @@ CURRENTDATE=`date '+%Y-%m-%d %H:%M:%S'`
 SCRIPTFILE=$(readlink -f "$0")
 SCRIPTFOLDER=$(dirname "$SCRIPTFILE")
 
-
 PromptSettings() {
   # Prompt user for their full name
   read -p "Enter your full name: " PROMPTREALNAME
   REALNAME=$PROMPTREALNAME
+  echo ""
   # Prompt user for their system username
   read -p "Enter your username: " PROMPTUSERNAME
   USERNAME=$PROMPTUSERNAME
+  echo ""
   # Prompt user for their email address
   read -p "Enter your email address: " PROMPTEMAIL
   USEREMAIL=$PROMPTEMAIL
+  echo ""
   # Prompt user for their password
   read -sp "Enter your password: " PROMPTPASSWORD
   USERPASS=$PROMPTPASSWORD
   USERPASSMD5=$(openssl passwd -1 "$USERPASS")
+  echo ""
   # Prompt user for the servers domain name
   read -p "Enter the domain for this server: " PROMPTDOMAIN
   SITEDOMAIN=$PROMPTDOMAIN
   DATABASE="${SITEDOMAIN//.}"
+  echo ""
   # Add the new user to the system
   AddSystemUser
 }
@@ -186,9 +189,6 @@ InstallNginx() {
 ConfigureNginx() {
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
-  # Remove the default Nginx server blocks
-  sudo rm /etc/nginx/sites-available/default
-  sudo rm /etc/nginx/sites-enabled/default
   # Backup the original Nginx config file
   sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.bkp
   # Update temp variables in new Nginx config file
@@ -228,6 +228,9 @@ ConfigureWebServer() {
 
 
 ConfigureServerBlock() {
+  # Remove the default Nginx server blocks
+  sudo rm /etc/nginx/sites-available/default
+  sudo rm /etc/nginx/sites-enabled/default
   # Update temp variables in the server-block conf files
   sudo sed -i "s/temp_ipaddress/$IPADDRESS/g" $SCRIPTFOLDER/server-block.conf
   sudo sed -i "s/temp_sitedomain/$SITEDOMAIN/g" $SCRIPTFOLDER/server-block.conf
@@ -236,6 +239,22 @@ ConfigureServerBlock() {
   sudo mv -v $SCRIPTFOLDER/server-block.conf /etc/nginx/sites-available/$SITEDOMAIN
   # Create a symlink to the server-block conf file
   sudo ln -s /etc/nginx/sites-available/$SITEDOMAIN /etc/nginx/sites-enabled/$SITEDOMAIN
+  # Install a self-signed SSL certificate
+  InstallSSLCertificate
+}
+
+
+InstallSSLCertificate() {
+  # Generate a self-signed SSL certificate
+  echo "$USEREMAIL" | sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITEDOMAIN/public -d $SITEDOMAIN
+  # Replace the default port 80 with port 443
+  sudo sed -i "s/80; /443 ssl http2;/g" /etc/nginx/sites-available/$SITEDOMAIN
+  # Uncomment the SSL certificate paths from the server block
+  sudo sed -i "s/#config //g" /etc/nginx/sites-available/$SITEDOMAIN
+  # Uncomment the SSL certificate parameters from the Nginx config
+  sudo sed -i "s/#config //g" /etc/nginx/nginx.conf
+  # Restart the Nginx web server
+  RestartNginxService
 }
 
 
