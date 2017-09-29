@@ -96,7 +96,7 @@ UpdatePackages() {
 
 
 InstallUpdates() {
-  # echo "    Installing package updates..."
+  echo "    [SKIPPED] Installing package updates..."
   # sudo apt-get -y upgrade > /dev/null
 }
 
