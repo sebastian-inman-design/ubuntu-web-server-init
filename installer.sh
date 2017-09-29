@@ -146,10 +146,7 @@ InstallPHP() {
 
 ConfigurePHP() {
   # Update the PHP owner and group to the newly created system user
-  sudo sed -i "s/user = www-data/user = $USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
-  sudo sed -i "s/group = www-data/user = $USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
-  sudo sed -i "s/listen.owner = www-data/user = $USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
-  sudo sed -i "s/listen.group = www-data/user = $USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
+  sudo sed -i "s/www-data/$USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
   # Update the server upload size limit of PHP
   sudo sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/g" /etc/php/7.1/fpm/php.ini
   sudo sed -i "s/post_max_size = 8M/post_max_size = 64M/g" /etc/php/7.1/fpm/php.ini
