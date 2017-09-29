@@ -7,5 +7,7 @@ SERVER_NAMES=""
 SECURE_INSTALL="true"
 ISSET_DOMAIN="false"
 
-COLOR_RESET='\e[0m'
-COLOR_GREEN='\e[0;32m'
+CLR_RESET='\e[0m'
+CLR_WHITE='\e[0;37m'
+CLR_GREEN='\e[0;32m'
+CLR_CYAN='\e[4;36m'
