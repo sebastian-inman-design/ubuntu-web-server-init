@@ -46,22 +46,18 @@ PromptSettings() {
   read -p "Enter your full name: " PROMPT_REAL_NAME
   REAL_NAME=$PROMPT_REAL_NAME
   # Prompt user for their system username
-  echo ""
   read -p "Enter your username: " PROMPT_USERNAME
   USERNAME=$PROMPT_USERNAME
   # Prompt user for their email address
-  echo ""
   read -p "Enter your email address: " PROMPT_EMAIL
   USER_EMAIL=$PROMPT_EMAIL
   # Prompt user for their password
   if [[ SECURE_INSTALL = "false" ]]; then
-    echo ""
     read -p "Enter your password: " PROMPT_PASSWORD
     USER_PASSWORD=$PROMPT_PASSWORD
     MYSQL_PASSWORD=$USER_PASSWORD
   fi
   # Prompt user for the servers domain name
-  echo ""
   read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
   echo ""
   if [[ -n "$PROMPT_DOMAIN" ]]; then
