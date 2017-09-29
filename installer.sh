@@ -25,12 +25,12 @@ Welcome() {
   echo -e "${CLR_RESET}"
   echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
   echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}Seeds Creative Services WordPress Installer"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}Made by Sebastian Inman ${CLR_CYAN}sebastian@seedscs.com"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}Seeds Creative Services WordPress Installer"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}Made by Sebastian Inman ${CLR_CYAN}sebastian@seedscs.com"
   echo -e "${CLR_YELLOW}EEEEEEEEEEEE              EEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}EEEEEEEEEEEE              EEEEEEEEEEEE    ${CLR_WHITE}This script automatically installs and configures"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}a fast and secure Nginx web server with the latest"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}build of WordPress."
+  echo -e "${CLR_YELLOW}EEEEEEEEEEEE              EEEEEEEEEEEE    ${CLR_RESET}This script automatically installs and configures"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}a fast and secure Nginx web server with the latest"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}build of WordPress."
   echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
   echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
   echo -e "${CLR_RESET}"
@@ -81,7 +81,7 @@ PromptSettings() {
 
 
 AddSystemUser() {
-  echo "[*] Creating new user '$USERNAME'..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Creating new user '$USERNAME'..."
   sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > $SCRIPT_FOLDER/installer.log 2>&1
   echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > $SCRIPT_FOLDER/installer.log 2>&1
   sudo usermod -aG sudo $USERNAME > $SCRIPT_FOLDER/installer.log 2>&1
@@ -91,13 +91,13 @@ AddSystemUser() {
 
 
 UpdatePackages() {
-  echo "[*] Checking for package updates..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Checking for package updates..."
   sudo apt-get update > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
 InstallUpdates() {
-  echo "[*] Installing package updates..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Installing package updates..."
   sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
@@ -133,7 +133,7 @@ ConfigureSystem() {
 
 
 InstallDependencies() {
-  echo "[*] Installing package dependencies..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Installing package dependencies..."
   # Install the UFW package
   sudo apt-get install -y ufw > $SCRIPT_FOLDER/installer.log 2>&1
   # Install the unzip package
@@ -150,7 +150,7 @@ InstallDependencies() {
 
 
 ConfigureFirewall() {
-  echo "[*] Configuring firewall..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring firewall..."
   # Allow SSH through firewall
   sudo ufw allow ssh > $SCRIPT_FOLDER/installer.log 2>&1
   # Allow HTTP through firewall
@@ -163,7 +163,7 @@ ConfigureFirewall() {
 
 
 InstallPHP() {
-  echo "[*] Installing PHP with core modules..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Installing PHP with core modules..."
   # Download the most recent PHP repository
   sudo add-apt-repository -y ppa:ondrej/php > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
@@ -186,7 +186,7 @@ ConfigurePHP() {
 
 
 InstallMySQL() {
-  echo "[*] Installing MySQL..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Installing MySQL..."
   # Check for package updates
   UpdatePackages
   # Configure the MySQL username and password
@@ -200,7 +200,7 @@ InstallMySQL() {
 
 
 ConfigureMySQL() {
-  echo "[*] Configuring MySQL databases..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring MySQL databases..."
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
@@ -217,7 +217,7 @@ RestartPHPService() {
 
 
 InstallNginx() {
-  echo "[*] Installing the Nginx server..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Installing the Nginx server..."
   # Download the most recent Nginx repository
   sudo add-apt-repository -y ppa:nginx/development > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
@@ -230,7 +230,7 @@ InstallNginx() {
 
 
 ConfigureNginx() {
-  echo "[*] Configuring the Nginx server to host $SITE_DOMAIN..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring the Nginx server to host $SITE_DOMAIN..."
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
@@ -251,7 +251,7 @@ RestartNginxService() {
 
 
 ConfigureWebServer() {
-  echo "[*] Configuring the $SITE_DOMAIN server block..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring the $SITE_DOMAIN server block..."
   # Create web server directories
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
@@ -302,7 +302,7 @@ InstallSSLCertificate() {
 
 
 InstallWordPress() {
-  echo "[*] Downloading and installing the latest WordPress build..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Downloading and installing the latest WordPress build..."
   # Download the latest version of WordPress
   curl -s -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
@@ -319,7 +319,7 @@ InstallWordPress() {
 
 
 ConfigureWordPress() {
-  echo "[*] Configuring the WordPress installation..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring the WordPress installation..."
   # Update temp variables in the wp-config file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
@@ -332,7 +332,7 @@ ConfigureWordPress() {
 
 
 InsallWordPressPlugins() {
-  echo "[*] Installing WordPress plugins..."
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Installing WordPress plugins..."
   # Delete any existing WordPress plugins
   sudo rm -r /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/*
   # Install default WordPress plugins
@@ -349,6 +349,7 @@ ConfigureCache() {
 
 
 RestartServices() {
+  echo "${CLR_YELLOW}[ * ]${CLR_RESET} Restarting system services..."
   # Restart the Redis cache service
   sudo service redis-server restart
   # Restart the PHP service
@@ -359,18 +360,26 @@ RestartServices() {
 
 
 StartInstaller() {
+
+  SECONDS=0
+  DURATION=$SECONDS
+
   sudo touch $SCRIPT_FOLDER/installer.log
   sudo touch $SCRIPT_FOLDER/credentials.log
+
   PromptSettings
   ConfigureSystem
   ConfigureWebServer
   ConfigureCache
+  InstallUpdates
   RestartServices
+
   echo ""
-  echo "Installation complete!"
+  echo "${CLR_GREEN}Installation finished in $(($DURATION / 60)) minutes and $(($DURATION % 60)) seconds!"
   echo "Your server password is: $USER_PASSWORD"
   echo "Your MySQL password is: $MYSQL_PASSWORD"
   echo ""
+
 }
 
 Welcome
