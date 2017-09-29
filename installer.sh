@@ -31,10 +31,15 @@ PromptSettings() {
   USERPASSMD5=$(openssl passwd -1 "$USERPASS")
   echo ""
   # Prompt user for the servers domain name
-  read -p "Enter the domain for this server: " PROMPTDOMAIN
-  SITEDOMAIN=$PROMPTDOMAIN
-  DATABASE="${SITEDOMAIN//.}"
+  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPTDOMAIN
   echo ""
+  if [[ -n "$PROMPTDOMAIN" ]]; then
+    SITEDOMAIN=$PROMPTDOMAIN
+    DATABASE="${SITEDOMAIN//.}"
+  else
+    SITEDOMAIN=$IPADDRESS
+    DATABASE="wordpress"
+  fi
   # Add the new user to the system
   AddSystemUser
 }
