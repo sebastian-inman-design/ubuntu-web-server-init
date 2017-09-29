@@ -40,16 +40,16 @@ Welcome() {
 
   echo ""
   echo -e "${CLR_RESET}"
-  echo -e "${CLR_RED}          MMMMMMM    MMMMMMMMMM"
-  echo -e "${CLR_RED}           MMMMMMM    MMMMMMMMMM"
-  echo -e "${CLR_RED}           MMMMMMMM    MMMMMMMMM      ${CLR_RESET}Highway Products, Inc. WordPress Installer"
-  echo -e "${CLR_RED}           MMMMMMMM    MMMMMMMMMM     ${CLR_RESET}By Sebastian Inman ${CLR_CYAN}sebastian.inman@highwayproducts.com"
-  echo -e "${CLR_RED}          MMMMMMMMM    MMMMMMMMMM"
-  echo -e "${CLR_RED}        MMMMMMMMMM    MMMMMMMMMMM     ${CLR_RESET}This script automatically installs and configures"
-  echo -e "${CLR_RED}       MMMMMMMMMM     MMMMMMMMMMM     ${CLR_RESET}a fast and secure Nginx web server with a fresh"
-  echo -e "${CLR_RED}    MMMMMMMMMMMM     MMMMMMMMMMMM     ${CLR_RESET}install of the latest build of WordPress."
-  echo -e "${CLR_RED}  MMMMMMMMMMMMM     MMMMMMMMMMMM"
-  echo -e "${CLR_RED}MMMMMMMMMMMMMM     MMMMMMMMMMMMM"
+  echo -e "${CLR_RED}          MMMMMMM   MMMMMMMMMM"
+  echo -e "${CLR_RED}           MMMMMMM   MMMMMMMMMM"
+  echo -e "${CLR_RED}           MMMMMMMM   MMMMMMMMM      ${CLR_RESET}Highway Products, Inc. WordPress Installer"
+  echo -e "${CLR_RED}           MMMMMMMM   MMMMMMMMMM     ${CLR_RESET}By Sebastian Inman ${CLR_CYAN}sebastian.inman@highwayproducts.com"
+  echo -e "${CLR_RED}          MMMMMMMMM   MMMMMMMMMM"
+  echo -e "${CLR_RED}        MMMMMMMMMM   MMMMMMMMMMM     ${CLR_RESET}This script automatically installs and configures"
+  echo -e "${CLR_RED}       MMMMMMMMMM    MMMMMMMMMMM     ${CLR_RESET}a fast and secure Nginx web server with a fresh"
+  echo -e "${CLR_RED}    MMMMMMMMMMMM    MMMMMMMMMMMM     ${CLR_RESET}install of the latest build of WordPress."
+  echo -e "${CLR_RED}  MMMMMMMMMMMMM    MMMMMMMMMMMM"
+  echo -e "${CLR_RED}MMMMMMMMMMMMMM    MMMMMMMMMMMMM"
   echo -e "${CLR_RESET}"
   echo ""
   echo ""
@@ -112,9 +112,14 @@ AddSystemUser() {
 InstallSSHKeys() {
   # Create a new SSH directory
   sudo mkdir -p /home/$USERNAME/.ssh
+  sudo chmod 700 /home/$USERNAME/.ssh
   # Move the SSH keys into the new directory
-  if [[ -f $SCRIPT_FOLDER/ssh/id_rsa ]]; then sudo mv $SCRIPT_FOLDER/ssh/id_rsa /home/$USERNAME/.ssh/id_rsa; fi
-  if [[ -f $SCRIPT_FOLDER/ssh/id_rsa.pub ]]; then sudo mv $SCRIPT_FOLDER/ssh/id_rsa.pub /home/$USERNAME/.ssh/id_rsa.pub; fi
+  if [[ -f $SCRIPT_FOLDER/ssh/id_rsa.pub ]]; then
+    SSH_KEY=$(sudo cat $SCRIPT_FOLDER/ssh/id_rsa.pub)
+    sudo touch /home/$USERNAME/.ssh/authorized_keys
+    echo "$SSH_KEY" > /home/$USERNAME/.ssh/authorized_keys
+    suco chmod 600 /home/$USERNAME/.ssh/authorized_keys
+  fi
 }
 
 
