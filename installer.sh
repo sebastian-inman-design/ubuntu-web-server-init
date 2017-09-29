@@ -222,14 +222,14 @@ ConfigureMySQL() {
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/mysql/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/mysql/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/installer.sql
-  # Update temp variables in the .my.cnf file
-  sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.cnf
-  # Move the .my.cnf file into the root directory
-  sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /root/.my.cnf
+  # Update temp variables in the mysql.conf file
+  sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/mysql.conf
+  # Move the mysql.conf file into the root directory
+  sudo mv $SCRIPT_FOLDER/mysql/mysql.conf /root/mysql.conf
   # Run the installer MySQL query
   # TODO mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/mysql/installer.sql" > $SCRIPT_FOLDER/installer.log 2>&1
   # TODO mysql -f -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/mysql/installer.sql"
-  mysql < "$SCRIPT_FOLDER/mysql/installer.sql"
+  mysql --defaults-file=/root/mysql.conf < "$SCRIPT_FOLDER/mysql/installer.sql"
 }
 
 
@@ -253,7 +253,7 @@ InstallNginx() {
 
 
 ConfigureNginx() {
-  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring the Nginx server to host $SITE_DOMAIN..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring the Nginx server..."
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
@@ -274,7 +274,7 @@ RestartNginxService() {
 
 
 ConfigureWebServer() {
-  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Configuring the $SITE_DOMAIN server block..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Creating the $SITE_DOMAIN server block..."
   # Create web server directories
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
