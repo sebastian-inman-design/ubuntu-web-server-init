@@ -306,8 +306,6 @@ ConfigureServerBlock() {
   sudo mv -v $SCRIPT_FOLDER/nginx/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN > $SCRIPT_FOLDER/installer.log 2>&1
   # Create a symlink to the server-block conf file
   sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN > $SCRIPT_FOLDER/installer.log 2>&1
-  # Install a self-signed SSL certificate (if domain is set)
-  # TODO if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
 }
 
 
@@ -319,7 +317,7 @@ InstallSSLCertificate() {
   # Install the Certbot package
   sudo apt-get install -y python-certbot-nginx > $SCRIPT_FOLDER/installer.log 2>&1
   # Generate the SSL certificates
-  sudo certbot certonly --nginx --webroot -w /home/$USERNAME/$SITE_DOMAIN/public -d $SITE_DOMAIN -d www.$SITE_DOMAIN
+  sudo certbot --nginx certonly -d $SITE_DOMAIN -d www.$SITE_DOMAIN
 }
 
 
@@ -390,13 +388,21 @@ StartInstaller() {
   sudo touch $SCRIPT_FOLDER/installer.log
   sudo touch $SCRIPT_FOLDER/credentials.log
 
+  # Prompt user input
   PromptSettings
+  # Initial server configuration
   ConfigureSystem
+  # Configure the web server
   ConfigureWebServer
+  # Configure server caching
   ConfigureCache
+  # Configure the server firewall
   ConfigureFirewall
+  # Install package updates
   InstallUpdates
-  InstallSSLCertificate
+  # Install a self-signed SSL certificate (if domain is set)
+  if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
+  # Restart system services
   RestartServices
 
   echo "Server IP Address: $IP_ADDRESS" >> $SCRIPT_FOLDER/credentials.log
