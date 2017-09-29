@@ -231,7 +231,7 @@ InstallNginx() {
 
 
 ConfigureNginx() {
-  echo "    Configuring the Nginx server to host $SITEDOMAIN..."
+  echo "    Configuring the Nginx server to host $SITE_DOMAIN..."
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
@@ -254,7 +254,7 @@ RestartNginxService() {
 
 
 ConfigureWebServer() {
-  echo "    Configuring the $SITEDOMAIN server block..."
+  echo "    Configuring the $SITE_DOMAIN server block..."
   # Create web server directories
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
@@ -309,7 +309,7 @@ InstallSSLCertificate() {
 InstallWordPress() {
   echo "    Downloading and installing the latest WordPress build..."
   # Download the latest version of WordPress
-  curl -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
+  curl -s -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
   unzip /home/$USERNAME/wordpress.zip -d /home/$USERNAME
   # Delete the WordPress zip file
