@@ -133,17 +133,17 @@ ConfigureSystem() {
 InstallDependencies() {
   echo "Installing system dependencies..."
   # Install the UFW package
-  sudo apt-et install -y ufw > /dev/null
+  sudo apt-get install -y ufw > /dev/null
   # Install the unzip package
-  sudo apt-et install -y unzip > /dev/null
+  sudo apt-get install -y unzip > /dev/null
   # Install the Fail2Ban package
-  sudo apt-et install -y fail2ban > /dev/null
+  sudo apt-get install -y fail2ban > /dev/null
   # Install the libpcre3 package
-  sudo apt-et install -y libpcre3 > /dev/null
+  sudo apt-get install -y libpcre3 > /dev/null
   # Install the LetsEncrypt package
-  sudo apt-et install -y letsencrypt > /dev/null
+  sudo apt-get install -y letsencrypt > /dev/null
   # Install Redis cache packages
-  sudo apt-et install -y redis-server > /dev/null
+  sudo apt-get install -y redis-server > /dev/null
 }
 
 
