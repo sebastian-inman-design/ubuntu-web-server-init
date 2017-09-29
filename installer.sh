@@ -136,8 +136,6 @@ ConfigureSystem() {
   # TODO sudo apt-get -y autoremove > $SCRIPT_FOLDER/installer.log 2>&1
   # Install system dependencies
   InstallDependencies
-  # Configure the firewall
-  ConfigureFirewall
   # Start the Fail2Ban service
   sudo service fail2ban start > $SCRIPT_FOLDER/installer.log 2>&1
   # Install and configure PHP
@@ -146,6 +144,8 @@ ConfigureSystem() {
   InstallNginx
   # Install and configure MySQL
   InstallMySQL
+  # Configure the firewall
+  ConfigureFirewall
 }
 
 
@@ -169,11 +169,13 @@ InstallDependencies() {
 ConfigureFirewall() {
   echo -e "${CLR_YELLOW}> ${CLR_RESET} Configuring firewall..."
   # Allow SSH through firewall
-  sudo ufw allow ssh > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo ufw allow 'ssh' > $SCRIPT_FOLDER/installer.log 2>&1
   # Allow HTTP through firewall
-  sudo ufw allow http > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo ufw allow 'http' > $SCRIPT_FOLDER/installer.log 2>&1
   # Allow HTTPS through firewall
-  sudo ufw allow https > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo ufw allow 'https' > $SCRIPT_FOLDER/installer.log 2>&1
+  # Allow Nginx through firewall
+  sudo ufw allow 'Nginx Full' > $SCRIPT_FOLDER/installer.log 2>&1
   # Enable the firewall
   echo "Y" | sudo ufw enable > $SCRIPT_FOLDER/installer.log 2>&1
 }
@@ -312,14 +314,14 @@ ConfigureServerBlock() {
 
 
 InstallSSLCertificate() {
-  # Generate a self-signed SSL certificate
-  echo "$USER_EMAIL" | sudo letsencrypt certonly --webroot -w /home/$USERNAME/$SITE_DOMAIN/public -d $SITE_DOMAIN
-  # Replace the default port 80 with port 443
-  sudo sed -i "s/80; /443 ssl http2;/g" /etc/nginx/sites-available/$SITE_DOMAIN
-  # Uncomment the SSL certificate paths from the server block
-  sudo sed -i "s/# config //g" /etc/nginx/sites-available/$SITE_DOMAIN
-  # Uncomment the SSL certificate parameters from the Nginx config
-  sudo sed -i "s/# config //g" /etc/nginx/nginx.conf
+  # Install the Certbot repository
+  sudo add-apt-repository -y ppa:certbot/certbot > $SCRIPT_FOLDER/installer.log 2>&1
+  # Check for package updates
+  UpdatePackages
+  # Install the Certbot package
+  sudo apt-get install -y python-certbot-nginx > $SCRIPT_FOLDER/installer.log 2>&1
+  # Generate the SSL certificates
+  sudo certbot --nginx -d $SITE_DOMAIN -d www.$SITE_DOMAIN
 }
 
 
@@ -395,6 +397,7 @@ StartInstaller() {
   ConfigureWebServer
   ConfigureCache
   InstallUpdates
+  InstallSSLCertificate
   RestartServices
 
   echo "Server IP Address: $IP_ADDRESS" >> $SCRIPT_FOLDER/credentials.log
