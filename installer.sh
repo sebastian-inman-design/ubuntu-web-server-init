@@ -12,7 +12,7 @@ USER_PASSWORD=$(openssl rand -base64 12)
 MYSQL_PASSWORD=$(openssl rand -base64 12)
 
 # Fetch IP address and local time
-IP_ADDRESS=$(curl http://icanhazip.com)
+IP_ADDRESS=$(curl -s http://icanhazip.com)
 CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
 
