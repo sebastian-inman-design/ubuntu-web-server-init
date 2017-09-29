@@ -18,7 +18,7 @@ CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
 Welcome() {
 
-  eclipse > /dev/null
+  eclipse > $SCRIPT_FOLDER/installer.log 2>&1
 
   clear
   echo ""
@@ -82,9 +82,9 @@ PromptSettings() {
 
 AddSystemUser() {
   echo "Creating new user '$USERNAME'..."
-  sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > /dev/null
-  echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > /dev/null
-  sudo usermod -aG sudo $USERNAME > /dev/null
+  sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > $SCRIPT_FOLDER/installer.log 2>&1
+  echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo usermod -aG sudo $USERNAME > $SCRIPT_FOLDER/installer.log 2>&1
   sudo mkdir -p /home/$USERNAME
   sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
 }
@@ -92,13 +92,13 @@ AddSystemUser() {
 
 UpdatePackages() {
   echo "Checking for package updates..."
-  sudo apt-get update > /dev/null
+  sudo apt-get update > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
 InstallUpdates() {
   echo "[SKIPPED] Installing package updates..."
-  # TODO sudo apt-get -y upgrade > /dev/null
+  # TODO sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
@@ -108,7 +108,7 @@ ConfigureSystem() {
   hostname -F /etc/hostname
   # Set the servers local timezone to PST
   echo "America/Los_Angeles" > /etc/timezone
-  dpkg-reconfigure -f noninteractive tzdata > /dev/null
+  dpkg-reconfigure -f noninteractive tzdata > $SCRIPT_FOLDER/installer.log 2>&1
   # Update the current time variable
   CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
   # Check for package updates
@@ -116,13 +116,13 @@ ConfigureSystem() {
   # Install package updates
   InstallUpdates
   # Remove old packages
-  # TODO sudo apt-get -y autoremove > /dev/null
+  # TODO sudo apt-get -y autoremove > $SCRIPT_FOLDER/installer.log 2>&1
   # Install system dependencies
   InstallDependencies
   # Configure the firewall
   ConfigureFirewall
   # Start the Fail2Ban service
-  sudo service fail2ban start > /dev/null
+  sudo service fail2ban start > $SCRIPT_FOLDER/installer.log 2>&1
   # Install and configure PHP
   InstallPHP
   # Install and configure Nginx
@@ -135,42 +135,42 @@ ConfigureSystem() {
 InstallDependencies() {
   echo "Installing system dependencies..."
   # Install the UFW package
-  sudo apt-get install -y ufw > /dev/null
+  sudo apt-get install -y ufw > $SCRIPT_FOLDER/installer.log 2>&1
   # Install the unzip package
-  sudo apt-get install -y unzip > /dev/null
+  sudo apt-get install -y unzip > $SCRIPT_FOLDER/installer.log 2>&1
   # Install the Fail2Ban package
-  sudo apt-get install -y fail2ban > /dev/null
+  sudo apt-get install -y fail2ban > $SCRIPT_FOLDER/installer.log 2>&1
   # Install the libpcre3 package
-  sudo apt-get install -y libpcre3 > /dev/null
+  sudo apt-get install -y libpcre3 > $SCRIPT_FOLDER/installer.log 2>&1
   # Install the LetsEncrypt package
-  sudo apt-get install -y letsencrypt > /dev/null
+  sudo apt-get install -y letsencrypt > $SCRIPT_FOLDER/installer.log 2>&1
   # Install Redis cache packages
-  sudo apt-get install -y redis-server > /dev/null
+  sudo apt-get install -y redis-server > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
 ConfigureFirewall() {
   echo "Configuring firewall..."
   # Allow SSH through firewall
-  sudo ufw allow ssh > /dev/null
+  sudo ufw allow ssh > $SCRIPT_FOLDER/installer.log 2>&1
   # Allow HTTP through firewall
-  sudo ufw allow http > /dev/null
+  sudo ufw allow http > $SCRIPT_FOLDER/installer.log 2>&1
   # Allow HTTPS through firewall
-  sudo ufw allow https > /dev/null
+  sudo ufw allow https > $SCRIPT_FOLDER/installer.log 2>&1
   # Enable the firewall
-  echo "Y" | sudo ufw enable > /dev/null
+  echo "Y" | sudo ufw enable > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
 InstallPHP() {
   echo "Installing PHP with core modules..."
   # Download the most recent PHP repository
-  sudo add-apt-repository -y ppa:ondrej/php > /dev/null
+  sudo add-apt-repository -y ppa:ondrej/php > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
   UpdatePackages
   # Install PHP and common modules
-  sudo apt-get install -y php7.1-fpm php7.1-common php7.1-mysqlnd php7.1-xmlrpc php7.1-curl php-redis > /dev/null
-  sudo apt-get install -y php7.1-gd php7.1-imagick php7.1-cli php-pear php7.1-dev php7.1-imap php7.1-mcrypt > /dev/null
+  sudo apt-get install -y php7.1-fpm php7.1-common php7.1-mysqlnd php7.1-xmlrpc php7.1-curl php-redis > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo apt-get install -y php7.1-gd php7.1-imagick php7.1-cli php-pear php7.1-dev php7.1-imap php7.1-mcrypt > $SCRIPT_FOLDER/installer.log 2>&1
   # Configure the PHP installation
   ConfigurePHP
 }
@@ -195,7 +195,7 @@ InstallMySQL() {
   echo "mysql-server mysql-server/root_password password $MYSQL_PASSWORD" | sudo debconf-set-selections
   echo "mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD" | sudo debconf-set-selections
   # Install the MySQL package
-  sudo apt-get install -y mysql-server > /dev/null
+  sudo apt-get install -y mysql-server > $SCRIPT_FOLDER/installer.log 2>&1
   # Configure the MySQL installation
   ConfigureMySQL
 }
@@ -221,11 +221,11 @@ RestartPHPService() {
 InstallNginx() {
   echo "Installing the Nginx server..."
   # Download the most recent Nginx repository
-  sudo add-apt-repository -y ppa:nginx/development > /dev/null
+  sudo add-apt-repository -y ppa:nginx/development > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
   UpdatePackages
   # Install the Nginx package
-  sudo apt-get install -y nginx > /dev/null
+  sudo apt-get install -y nginx > $SCRIPT_FOLDER/installer.log 2>&1
   # Configure the Nginx installation
   ConfigureNginx
 }
@@ -361,6 +361,7 @@ ConfigureCache() {
 
 
 StartInstaller() {
+  sudo touch $SCRIPT_FOLDER/installer.log
   PromptSettings
   ConfigureSystem
   ConfigureWebServer
