@@ -219,12 +219,17 @@ InstallMySQL() {
 ConfigureMySQL() {
   echo -e "${CLR_YELLOW}  >>>${CLR_RESET} Configuring MySQL databases..."
   # Update temp variables in the installer MySQL file
-  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
-  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
+  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/mysql/installer.sql
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/mysql/installer.sql
+  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/installer.sql
+  # Update temp variables in the .my.conf file
+  sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.conf
+  # Move the .my.conf file into the root directory
+  sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /root/.my.cnf
   # Run the installer MySQL query
-  # TODO mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/databases/installer.sql" > $SCRIPT_FOLDER/installer.log 2>&1
-  mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/databases/installer.sql"
+  # TODO mysql -f -s -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/mysql/installer.sql" > $SCRIPT_FOLDER/installer.log 2>&1
+  # TODO mysql -f -uroot -p$MYSQL_PASSWORD < "$SCRIPT_FOLDER/mysql/installer.sql"
+  mysql < "$SCRIPT_FOLDER/mysql/installer.sql"
 }
 
 
