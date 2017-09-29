@@ -62,7 +62,7 @@ PromptSettings() {
     MYSQL_PASSWORD=$USER_PASSWORD
   fi
   # Prompt user for the servers domain name
-  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
+  read -p "Enter the domain for this server: " PROMPT_DOMAIN
   echo ""
   if [[ -n "$PROMPT_DOMAIN" ]]; then
     ISSET_DOMAIN="true"
@@ -208,7 +208,7 @@ ConfigureMySQL() {
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
   # Run the installer MySQL query
-  mysql --login-path=local --password=$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
+  mysql --login-path=local -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
 }
 
 
@@ -378,11 +378,12 @@ StartInstaller() {
   FINISH_TIME="$(date -u +%s)"
   ELAPSED_TIME="$(($FINISH_TIME-$START_TIME))"
 
-  echo ""
-  echo -e "${CLR_GREEN}Installation finished in $(($ELAPSED_TIME/60)) minutes and $(($ELAPSED_TIME%60)) seconds!"
+  echo -e "${CLR_RESET}"
+  echo -e "${CLR_GREEN}Completed installation in $(($ELAPSED_TIME/60)) minutes and $(($ELAPSED_TIME%60)) seconds!"
+  echo -e "${CLR_RESET}"
   echo -e "${CLR_RESET}Your server password is:${CLR_CYAN} $USER_PASSWORD"
   echo -e "${CLR_RESET}Your MySQL password is:${CLR_CYAN} $MYSQL_PASSWORD"
-  echo ""
+  echo -e "${CLR_RESET}"
 
 }
 
