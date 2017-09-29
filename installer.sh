@@ -115,7 +115,7 @@ UpdatePackages() {
 
 InstallUpdates() {
   echo -e "${CLR_YELLOW}> ${CLR_RESET} Installing package updates..."
-  sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
+  # sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
