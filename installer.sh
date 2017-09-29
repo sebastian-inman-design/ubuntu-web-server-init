@@ -23,16 +23,16 @@ Welcome() {
   clear
   echo ""
   echo -e "${CLR_RESET}"
-  echo -e "${CLR_YELLOW}    EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}    EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}    EEEE                              EEEE    ${CLR_WHITE}Welcome to the Seeds CS WordPress Installer!"
-  echo -e "${CLR_YELLOW}    EEEE                              EEEE    ${CLR_WHITE}Created by Sebastian Inman ${CLR_CYAN}sebastian@seedscs.com"
-  echo -e "${CLR_YELLOW}    EEEEEEEEEEEE              EEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}    EEEEEEEEEEEE              EEEEEEEEEEEE    ${CLR_WHITE}This script will automatically install and configure"
-  echo -e "${CLR_YELLOW}    EEEE                              EEEE    ${CLR_WHITE}a full-featured Nginx server with PHP, MySQL, fail2ban"
-  echo -e "${CLR_YELLOW}    EEEE                              EEEE    ${CLR_WHITE}and many other common packages. It will then install the"
-  echo -e "${CLR_YELLOW}    EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE    ${CLR_WHITE}latest version of WordPress."
-  echo -e "${CLR_YELLOW}    EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
+  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
+  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}Seeds Creative Services WordPress Installer"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}Made by Sebastian Inman ${CLR_CYAN}sebastian@seedscs.com"
+  echo -e "${CLR_YELLOW}EEEEEEEEEEEE              EEEEEEEEEEEE"
+  echo -e "${CLR_YELLOW}EEEEEEEEEEEE              EEEEEEEEEEEE    ${CLR_WHITE}This script automatically installs and configures"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}a fast and secure Nginx web server with the latest"
+  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_WHITE}build of WordPress."
+  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
+  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
   echo -e "${CLR_RESET}"
   echo ""
   echo ""
@@ -97,7 +97,7 @@ UpdatePackages() {
 
 
 InstallUpdates() {
-  echo "[SKIPPED] Installing package updates..."
+  echo "[*] Installing package updates..."
   sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
@@ -182,8 +182,6 @@ ConfigurePHP() {
   # Update the server upload size limit of PHP
   sudo sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/g" /etc/php/7.1/fpm/php.ini
   sudo sed -i "s/post_max_size = 8M/post_max_size = 64M/g" /etc/php/7.1/fpm/php.ini
-  # Restart the PHP service
-  RestartPHPService
 }
 
 
@@ -269,8 +267,6 @@ ConfigureWebServer() {
   sudo chmod -R 755 /home/$USERNAME/$SITE_DOMAIN
   sudo chown -R $USERNAME:$USERNAME /run/php
   sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/$SITE_DOMAIN
-  # Restart the Nginx web server
-  RestartNginxService
   # Install WordPress into the public web directory
   InstallWordPress
 }
@@ -290,8 +286,6 @@ ConfigureServerBlock() {
   sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN
   # Install a self-signed SSL certificate (if domain is set)
   # TODO if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
-  # Restart the Nginx web server
-  RestartNginxService
 }
 
 
@@ -351,6 +345,10 @@ InsallWordPressPlugins() {
 ConfigureCache() {
   # Enable the maxmemory parameter
   sudo sed -i "s/# maxmemory/maxmemory/g" /etc/redis/redis.conf
+}
+
+
+RestartServices() {
   # Restart the Redis cache service
   sudo service redis-server restart
   # Restart the PHP service
@@ -366,6 +364,7 @@ StartInstaller() {
   ConfigureSystem
   ConfigureWebServer
   ConfigureCache
+  RestartServices
   echo ""
   echo "Installation complete!"
   echo "Your server password is: $USER_PASSWORD"
