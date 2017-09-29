@@ -102,12 +102,10 @@ ConfigureSystem() {
 
 
 InstallDependencies() {
-  # Install the unzip package
-  sudo apt install unzip -y
-  # Install the expect package
-  sudo apt install expect -y
   # Install the UFW package
   sudo apt install ufw -y
+  # Install the unzip package
+  sudo apt install unzip -y
   # Install the Fail2Ban package
   sudo apt install fail2ban -y
   # Install the LetsEncrypt package
