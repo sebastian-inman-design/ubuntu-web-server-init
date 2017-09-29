@@ -7,6 +7,7 @@ USER_PASSWORD=""
 USER_PASSWORDMD5=""
 SITE_DOMAIN=""
 DATABASE=""
+SERVER_NAMES=""
 
 IP_ADDRESS=$(curl http://icanhazip.com)
 CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
@@ -17,33 +18,35 @@ ISSET_DOMAIN="false"
 
 PromptSettings() {
   # Prompt user for their full name
+  echo ""
   read -p "Enter your full name: " PROMPT_REAL_NAME
   REAL_NAME=$PROMPT_REAL_NAME
-  echo ""
   # Prompt user for their system username
+  echo ""
   read -p "Enter your username: " PROMPT_USERNAME
   USERNAME=$PROMPT_USERNAME
-  echo ""
   # Prompt user for their email address
+  echo ""
   read -p "Enter your email address: " PROMPT_EMAIL
   USER_EMAIL=$PROMPT_EMAIL
-  echo ""
   # Prompt user for their password
+  echo ""
   read -p "Enter your password: " PROMPT_PASSWORD
   USER_PASSWORD=$PROMPT_PASSWORD
   USER_PASSWORDMD5=$(openssl passwd -1 "$USER_PASSWORD")
-  echo ""
   # Prompt user for the servers domain name
-  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
   echo ""
+  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
   if [[ -n "$PROMPT_DOMAIN" ]]; then
     ISSET_DOMAIN="true"
     SITE_DOMAIN=$PROMPT_DOMAIN
     DATABASE="${SITE_DOMAIN//.}"
+    SERVER_NAMES="$IPADDRESS $SITE_DOMAIN www.$SITE_DOMAIN"
   else
     ISSET_DOMAIN="false"
     SITE_DOMAIN=$IP_ADDRESS
     DATABASE="wordpress"
+    SERVER_NAMES="$IP_ADDRESS"
   fi
   # Add the new user to the system
   AddSystemUser
@@ -51,7 +54,6 @@ PromptSettings() {
 
 
 AddSystemUser() {
-  echo "Adding new system user..."
   sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password
   echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd
   sudo usermod -aG sudo $USERNAME
@@ -61,13 +63,11 @@ AddSystemUser() {
 
 
 UpdatePackages() {
-  echo "Checking system for package updates..."
   sudo apt update
 }
 
 
 InstallUpdates() {
-  echo "Installing system package updates..."
   sudo apt upgrade -y
 }
 
@@ -170,9 +170,9 @@ InstallMySQL() {
 
 ConfigureMySQL() {
   # Update temp variables in the installer MySQL file
-  sudo sed -i "s/temp_database/$DATABASE/g" $SCRIPT_FOLDER/database/installer.sql
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/database/installer.sql
-  sudo sed -i "s/temp_password/$USER_PASSWORD/g" $SCRIPT_FOLDER/database/installer.sql
+  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/database/installer.sql
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/database/installer.sql
+  sudo sed -i "s/%USER_PASSWORD%/$USER_PASSWORD/g" $SCRIPT_FOLDER/database/installer.sql
   # Run the installer MySQL query
   mysql --verbose -u root -p$USER_PASSWORD < $SCRIPT_FOLDER/database/installer.sql
 }
@@ -202,7 +202,7 @@ ConfigureNginx() {
   # Backup the original Nginx config file
   sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.bkp
   # Update temp variables in new Nginx config file
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/nginx.conf
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx.conf
   # Move the configured Nginx config file
   sudo mv -v $SCRIPT_FOLDER/nginx.conf /etc/nginx/nginx.conf
   # Configure the server block
@@ -242,9 +242,9 @@ ConfigureServerBlock() {
   sudo rm /etc/nginx/sites-available/default
   sudo rm /etc/nginx/sites-enabled/default
   # Update temp variables in the server-block conf files
-  sudo sed -i "s/temp_IP_ADDRESS/$IP_ADDRESS/g" $SCRIPT_FOLDER/server-block.conf
-  sudo sed -i "s/temp_SITE_DOMAIN/$SITE_DOMAIN/g" $SCRIPT_FOLDER/server-block.conf
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/server-block.conf
+  sudo sed -i "s/%SERVER_NAMES%/$SERVER_NAMES/g" $SCRIPT_FOLDER/server-block.conf
+  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/server-block.conf
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/server-block.conf
   # Move the server-block conf file into the Nginx directory
   sudo mv -v $SCRIPT_FOLDER/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN
   # Create a symlink to the server-block conf file
@@ -262,9 +262,9 @@ InstallSSLCertificate() {
   # Replace the default port 80 with port 443
   sudo sed -i "s/80; /443 ssl http2;/g" /etc/nginx/sites-available/$SITE_DOMAIN
   # Uncomment the SSL certificate paths from the server block
-  sudo sed -i "s/#config //g" /etc/nginx/sites-available/$SITE_DOMAIN
+  sudo sed -i "s/# config //g" /etc/nginx/sites-available/$SITE_DOMAIN
   # Uncomment the SSL certificate parameters from the Nginx config
-  sudo sed -i "s/#config //g" /etc/nginx/nginx.conf
+  sudo sed -i "s/# config //g" /etc/nginx/nginx.conf
 }
 
 
@@ -286,9 +286,9 @@ InstallWordPress() {
 
 ConfigureWordPress() {
   # Update temp variables in the wp-config file
-  sudo sed -i "s/temp_database/$DATABASE/g" $SCRIPT_FOLDER/wp-config.php
-  sudo sed -i "s/temp_username/$USERNAME/g" $SCRIPT_FOLDER/wp-config.php
-  sudo sed -i "s/temp_password/$USER_PASSWORD/g" $SCRIPT_FOLDER/wp-config.php
+  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wp-config.php
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wp-config.php
+  sudo sed -i "s/%USER_PASSWORD%/$USER_PASSWORD/g" $SCRIPT_FOLDER/wp-config.php
   # Move the configured wp-config file
   sudo mv -v $SCRIPT_FOLDER/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
   # Install default WordPress plugins
