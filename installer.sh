@@ -36,7 +36,7 @@ Welcome() {
   echo -e "${CLR_RESET}"
   echo ""
 
-  read -n 1 -s -r -p "    Press any key to begin the installation process..."
+  read -n 1 -s -r -p "Press any key to begin the installation process..."
   echo ""
   StartInstaller
 
@@ -46,22 +46,22 @@ Welcome() {
 PromptSettings() {
   # Prompt user for their full name
   echo ""
-  read -p "    Enter your full name: " PROMPT_REAL_NAME
+  read -p "Enter your full name: " PROMPT_REAL_NAME
   REAL_NAME=$PROMPT_REAL_NAME
   # Prompt user for their system username
-  read -p "    Enter your username: " PROMPT_USERNAME
+  read -p "Enter your username: " PROMPT_USERNAME
   USERNAME=$PROMPT_USERNAME
   # Prompt user for their email address
-  read -p "    Enter your email address: " PROMPT_EMAIL
+  read -p "Enter your email address: " PROMPT_EMAIL
   USER_EMAIL=$PROMPT_EMAIL
   # Prompt user for their password
   if [[ SECURE_INSTALL = "false" ]]; then
-    read -p "    Enter your password: " PROMPT_PASSWORD
+    read -p "Enter your password: " PROMPT_PASSWORD
     USER_PASSWORD=$PROMPT_PASSWORD
     MYSQL_PASSWORD=$USER_PASSWORD
   fi
   # Prompt user for the servers domain name
-  read -p "    Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
+  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
   echo ""
   if [[ -n "$PROMPT_DOMAIN" ]]; then
     ISSET_DOMAIN="true"
@@ -80,7 +80,7 @@ PromptSettings() {
 
 
 AddSystemUser() {
-  echo "    Creating new user '$USERNAME'..."
+  echo "Creating new user '$USERNAME'..."
   sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > /dev/null
   echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > /dev/null
   sudo usermod -aG sudo $USERNAME > /dev/null
@@ -90,14 +90,14 @@ AddSystemUser() {
 
 
 UpdatePackages() {
-  echo "    Checking for package updates..."
+  echo "Checking for package updates..."
   sudo apt-get update > /dev/null
 }
 
 
 InstallUpdates() {
-  echo "    [SKIPPED] Installing package updates..."
-  # sudo apt-get -y upgrade > /dev/null
+  echo "[SKIPPED] Installing package updates..."
+  # TODO sudo apt-get -y upgrade > /dev/null
 }
 
 
@@ -115,13 +115,13 @@ ConfigureSystem() {
   # Install package updates
   InstallUpdates
   # Remove old packages
-  sudo apt autoremove -y
+  # TODO sudo apt-get -y autoremove > /dev/null
   # Install system dependencies
   InstallDependencies
   # Configure the firewall
   ConfigureFirewall
   # Start the Fail2Ban service
-  sudo service fail2ban start
+  sudo service fail2ban start > /dev/null
   # Install and configure PHP
   InstallPHP
   # Install and configure Nginx
@@ -132,7 +132,7 @@ ConfigureSystem() {
 
 
 InstallDependencies() {
-  echo "    Installing system dependencies..."
+  echo "Installing system dependencies..."
   # Install the UFW package
   sudo apt-get install -y ufw > /dev/null
   # Install the unzip package
@@ -149,7 +149,7 @@ InstallDependencies() {
 
 
 ConfigureFirewall() {
-  echo "    Configuring firewall..."
+  echo "Configuring firewall..."
   # Allow SSH through firewall
   sudo ufw allow ssh > /dev/null
   # Allow HTTP through firewall
@@ -162,7 +162,7 @@ ConfigureFirewall() {
 
 
 InstallPHP() {
-  echo "    Installing PHP with core modules..."
+  echo "Installing PHP with core modules..."
   # Download the most recent PHP repository
   sudo add-apt-repository -y ppa:ondrej/php > /dev/null
   # Check for package updates
@@ -187,7 +187,7 @@ ConfigurePHP() {
 
 
 InstallMySQL() {
-  echo "    Installing MySQL..."
+  echo "Installing MySQL..."
   # Check for package updates
   UpdatePackages
   # Configure the MySQL username and password
