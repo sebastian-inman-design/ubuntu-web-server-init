@@ -36,7 +36,7 @@ Welcome() {
   echo -e "${CLR_RESET}"
   echo ""
 
-  read -n 1 -s -r -p "Press any key to begin the installation process..."
+  read -n 1 -s -r -p "    Press any key to begin the installation process..."
   echo ""
   StartInstaller
 
@@ -46,22 +46,22 @@ Welcome() {
 PromptSettings() {
   # Prompt user for their full name
   echo ""
-  read -p "Enter your full name: " PROMPT_REAL_NAME
+  read -p "    Enter your full name: " PROMPT_REAL_NAME
   REAL_NAME=$PROMPT_REAL_NAME
   # Prompt user for their system username
-  read -p "Enter your username: " PROMPT_USERNAME
+  read -p "    Enter your username: " PROMPT_USERNAME
   USERNAME=$PROMPT_USERNAME
   # Prompt user for their email address
-  read -p "Enter your email address: " PROMPT_EMAIL
+  read -p "    Enter your email address: " PROMPT_EMAIL
   USER_EMAIL=$PROMPT_EMAIL
   # Prompt user for their password
   if [[ SECURE_INSTALL = "false" ]]; then
-    read -p "Enter your password: " PROMPT_PASSWORD
+    read -p "    Enter your password: " PROMPT_PASSWORD
     USER_PASSWORD=$PROMPT_PASSWORD
     MYSQL_PASSWORD=$USER_PASSWORD
   fi
   # Prompt user for the servers domain name
-  read -p "Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
+  read -p "    Enter the domain for this server (leave empty to use server IP): " PROMPT_DOMAIN
   echo ""
   if [[ -n "$PROMPT_DOMAIN" ]]; then
     ISSET_DOMAIN="true"
@@ -80,7 +80,7 @@ PromptSettings() {
 
 
 AddSystemUser() {
-  echo "Creating new user '$USERNAME'..."
+  echo "    Creating new user '$USERNAME'..."
   sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > /dev/null
   echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > /dev/null
   sudo usermod -aG sudo $USERNAME > /dev/null
@@ -90,14 +90,14 @@ AddSystemUser() {
 
 
 UpdatePackages() {
-  echo "Checking for package updates..."
+  echo "    Checking for package updates..."
   sudo apt-get update > /dev/null
 }
 
 
 InstallUpdates() {
-  echo "Installing package updates..."
-  sudo apt-get -y upgrade > /dev/null
+  # echo "    Installing package updates..."
+  # sudo apt-get -y upgrade > /dev/null
 }
 
 
@@ -132,7 +132,7 @@ ConfigureSystem() {
 
 
 InstallDependencies() {
-  echo "Installing system dependencies..."
+  echo "    Installing system dependencies..."
   # Install the UFW package
   sudo apt-get install -y ufw > /dev/null
   # Install the unzip package
@@ -149,6 +149,7 @@ InstallDependencies() {
 
 
 ConfigureFirewall() {
+  echo "    Configuring firewall..."
   # Allow SSH through firewall
   sudo ufw allow ssh > /dev/null
   # Allow HTTP through firewall
@@ -161,6 +162,7 @@ ConfigureFirewall() {
 
 
 InstallPHP() {
+  echo "    Installing PHP with core modules..."
   # Download the most recent PHP repository
   sudo add-apt-repository -y ppa:ondrej/php > /dev/null
   # Check for package updates
@@ -185,25 +187,27 @@ ConfigurePHP() {
 
 
 InstallMySQL() {
+  echo "    Installing MySQL..."
   # Check for package updates
   UpdatePackages
   # Configure the MySQL username and password
   echo "mysql-server mysql-server/root_password password $MYSQL_PASSWORD" | sudo debconf-set-selections
   echo "mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD" | sudo debconf-set-selections
   # Install the MySQL package
-  sudo apt install mysql-server -y
+  sudo apt-get install -y mysql-server > /dev/null
   # Configure the MySQL installation
   ConfigureMySQL
 }
 
 
 ConfigureMySQL() {
+  echo "    Configuring MySQL databases..."
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
   # Run the installer MySQL query
-  mysql --verbose -u root -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
+  mysql -u root -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
 }
 
 
@@ -214,18 +218,20 @@ RestartPHPService() {
 
 
 InstallNginx() {
+  echo "    Installing the Nginx server..."
   # Download the most recent Nginx repository
-  sudo add-apt-repository ppa:nginx/development -y
+  sudo add-apt-repository -y ppa:nginx/development > /dev/null
   # Check for package updates
   UpdatePackages
   # Install the Nginx package
-  sudo apt install nginx -y
+  sudo apt-get install -y nginx > /dev/null
   # Configure the Nginx installation
   ConfigureNginx
 }
 
 
 ConfigureNginx() {
+  echo "    Configuring the Nginx server to host $SITEDOMAIN..."
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
@@ -233,7 +239,7 @@ ConfigureNginx() {
   # Update temp variables in new Nginx config file
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/nginx.conf
   # Move the configured Nginx config file
-  sudo mv -v $SCRIPT_FOLDER/nginx/nginx.conf /etc/nginx/nginx.conf
+  sudo mv $SCRIPT_FOLDER/nginx/nginx.conf /etc/nginx/nginx.conf
   # Configure the server block
   ConfigureServerBlock
   # Restart the Nginx web server
@@ -248,6 +254,7 @@ RestartNginxService() {
 
 
 ConfigureWebServer() {
+  echo "    Configuring the $SITEDOMAIN server block..."
   # Create web server directories
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
@@ -257,8 +264,8 @@ ConfigureWebServer() {
   sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/access.log
   sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/errors.log
   # Move favicon and robots file into public directory
-  sudo mv -v $SCRIPT_FOLDER/assets/robots.txt /home/$USERNAME/$SITE_DOMAIN/public/robots.txt
-  sudo mv -v $SCRIPT_FOLDER/assets/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico
+  sudo mv $SCRIPT_FOLDER/assets/robots.txt /home/$USERNAME/$SITE_DOMAIN/public/robots.txt
+  sudo mv $SCRIPT_FOLDER/assets/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico
   # Update permissions of the web directory
   sudo chmod -R 755 /home/$USERNAME/$SITE_DOMAIN
   sudo chown -R $USERNAME:$USERNAME /run/php
@@ -277,7 +284,7 @@ ConfigureServerBlock() {
   sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/nginx/server-block.conf
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/server-block.conf
   # Move the server-block conf file into the Nginx directory
-  sudo mv -v $SCRIPT_FOLDER/nginx/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN
+  sudo mv $SCRIPT_FOLDER/nginx/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN
   # Create a symlink to the server-block conf file
   sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN
   # Install a self-signed SSL certificate (if domain is set)
@@ -300,6 +307,7 @@ InstallSSLCertificate() {
 
 
 InstallWordPress() {
+  echo "    Downloading and installing the latest WordPress build..."
   # Download the latest version of WordPress
   curl -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
@@ -307,7 +315,7 @@ InstallWordPress() {
   # Delete the WordPress zip file
   sudo rm /home/$USERNAME/wordpress.zip
   # Install the WordPress download
-  sudo mv -v /home/$USERNAME/wordpress/* /home/$USERNAME/$SITE_DOMAIN/public
+  sudo mv /home/$USERNAME/wordpress/* /home/$USERNAME/$SITE_DOMAIN/public
   # Delete the WordPress download directory
   sudo rm -rf /home/$USERNAME/wordpress
   # Configure the WordPress installation
@@ -321,7 +329,7 @@ ConfigureWordPress() {
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   # Move the configured wp-config file
-  sudo mv -v $SCRIPT_FOLDER/wordpress/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
+  sudo mv $SCRIPT_FOLDER/wordpress/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
   # Install default WordPress plugins
   InsallWordPressPlugins
 }
