@@ -84,7 +84,7 @@ PromptSettings() {
   if [[ -n "$PROMPT_DOMAIN" ]]; then
     ISSET_DOMAIN="true"
     SITE_DOMAIN=$PROMPT_DOMAIN
-    DATABASE="${SITE_DOMAIN/_/.}"
+    DATABASE="${SITE_DOMAIN//.}"
     SERVER_NAMES="$IPADDRESS $SITE_DOMAIN www.$SITE_DOMAIN"
   else
     ISSET_DOMAIN="false"
