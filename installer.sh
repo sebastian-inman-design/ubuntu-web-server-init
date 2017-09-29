@@ -104,22 +104,6 @@ AddSystemUser() {
   sudo usermod -aG sudo $USERNAME > $SCRIPT_FOLDER/installer.log 2>&1
   sudo mkdir -p /home/$USERNAME
   sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
-  # Install SSH Keys
-  InstallSSHKeys
-}
-
-
-InstallSSHKeys() {
-  # Create a new SSH directory
-  sudo mkdir -p /home/$USERNAME/.ssh
-  sudo chmod 700 /home/$USERNAME/.ssh
-  # Move the SSH keys into the new directory
-  if [[ -f $SCRIPT_FOLDER/ssh/id_rsa.pub ]]; then
-    SSH_KEY=$(sudo cat $SCRIPT_FOLDER/ssh/id_rsa.pub)
-    sudo touch /home/$USERNAME/.ssh/authorized_keys
-    echo "$SSH_KEY" > /home/$USERNAME/.ssh/authorized_keys
-    sudo chmod 600 /home/$USERNAME/.ssh/authorized_keys
-  fi
 }
 
 
