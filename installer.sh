@@ -325,6 +325,7 @@ InstallWordPress() {
 
 
 ConfigureWordPress() {
+  echo "Configuring the WordPress installation..."
   # Update temp variables in the wp-config file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
@@ -337,6 +338,7 @@ ConfigureWordPress() {
 
 
 InsallWordPressPlugins() {
+  echo "Installing default WordPress plugins..."
   # Delete any existing WordPress plugins
   sudo rm -r /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/*
   # Install default WordPress plugins
