@@ -197,10 +197,10 @@ InstallPHP() {
 
 ConfigurePHP() {
   # Update the PHP owner and group to the newly created system user
-  sudo sed -i "s/www-data/$USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf
+  sudo sed -i "s/www-data/$USERNAME/g" /etc/php/7.1/fpm/pool.d/www.conf > $SCRIPT_FOLDER/installer.log 2>&1
   # Update the server upload size limit of PHP
-  sudo sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/g" /etc/php/7.1/fpm/php.ini
-  sudo sed -i "s/post_max_size = 8M/post_max_size = 64M/g" /etc/php/7.1/fpm/php.ini
+  sudo sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/g" /etc/php/7.1/fpm/php.ini > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/post_max_size = 8M/post_max_size = 64M/g" /etc/php/7.1/fpm/php.ini > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
@@ -221,13 +221,13 @@ InstallMySQL() {
 ConfigureMySQL() {
   echo -e "${CLR_YELLOW}> ${CLR_RESET} Configuring MySQL databases..."
   # Update temp variables in the installer MySQL file
-  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/mysql/installer.sql
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/mysql/installer.sql
-  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/installer.sql
+  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/mysql/installer.sql > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/mysql/installer.sql > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/installer.sql > $SCRIPT_FOLDER/installer.log 2>&1
   # Update temp variables in the .my.cnf file
-  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.cnf
+  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.cnf > $SCRIPT_FOLDER/installer.log 2>&1
   # Move the .my.cnf file into the etc directory
-  sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /home/$USERNAME/.my.cnf
+  sudo mv -v $SCRIPT_FOLDER/mysql/.my.cnf /home/$USERNAME/.my.cnf > $SCRIPT_FOLDER/installer.log 2>&1
   sudo chmod 600 /home/$USERNAME/.my.cnf
   # Run the installer MySQL query
   sudo mysql --defaults-extra-file=/home/$USERNAME/.my.cnf < "$SCRIPT_FOLDER/mysql/installer.sql"
@@ -258,11 +258,11 @@ ConfigureNginx() {
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
-  sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.bkp
+  sudo mv -v /etc/nginx/nginx.conf /etc/nginx/nginx.bkp > $SCRIPT_FOLDER/installer.log 2>&1
   # Update temp variables in new Nginx config file
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/nginx.conf
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/nginx.conf > $SCRIPT_FOLDER/installer.log 2>&1
   # Move the configured Nginx config file
-  sudo mv $SCRIPT_FOLDER/nginx/nginx.conf /etc/nginx/nginx.conf
+  sudo mv -v $SCRIPT_FOLDER/nginx/nginx.conf /etc/nginx/nginx.conf > $SCRIPT_FOLDER/installer.log 2>&1
   # Configure the server block
   ConfigureServerBlock
 }
@@ -285,8 +285,8 @@ ConfigureWebServer() {
   sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/access.log
   sudo touch /home/$USERNAME/$SITE_DOMAIN/logs/errors.log
   # Move favicon and robots file into public directory
-  sudo mv $SCRIPT_FOLDER/assets/robots.txt /home/$USERNAME/$SITE_DOMAIN/public/robots.txt
-  sudo mv $SCRIPT_FOLDER/assets/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico
+  sudo mv -v $SCRIPT_FOLDER/assets/robots.txt /home/$USERNAME/$SITE_DOMAIN/public/robots.txt > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo mv -v $SCRIPT_FOLDER/assets/favicon.ico /home/$USERNAME/$SITE_DOMAIN/public/favicon.ico > $SCRIPT_FOLDER/installer.log 2>&1
   # Update permissions of the web directory
   sudo chmod -R 755 /home/$USERNAME/$SITE_DOMAIN
   sudo chown -R $USERNAME:$USERNAME /run/php
@@ -301,13 +301,13 @@ ConfigureServerBlock() {
   sudo rm /etc/nginx/sites-available/default
   sudo rm /etc/nginx/sites-enabled/default
   # Update temp variables in the server-block conf files
-  sudo sed -i "s/%SERVER_NAMES%/$SERVER_NAMES/g" $SCRIPT_FOLDER/nginx/server-block.conf
-  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/nginx/server-block.conf
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/server-block.conf
+  sudo sed -i "s/%SERVER_NAMES%/$SERVER_NAMES/g" $SCRIPT_FOLDER/nginx/server-block.conf > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/nginx/server-block.conf > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/nginx/server-block.conf > $SCRIPT_FOLDER/installer.log 2>&1
   # Move the server-block conf file into the Nginx directory
-  sudo mv $SCRIPT_FOLDER/nginx/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN
+  sudo mv -v $SCRIPT_FOLDER/nginx/server-block.conf /etc/nginx/sites-available/$SITE_DOMAIN > $SCRIPT_FOLDER/installer.log 2>&1
   # Create a symlink to the server-block conf file
-  sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN
+  sudo ln -s /etc/nginx/sites-available/$SITE_DOMAIN /etc/nginx/sites-enabled/$SITE_DOMAIN > $SCRIPT_FOLDER/installer.log 2>&1
   # Install a self-signed SSL certificate (if domain is set)
   # TODO if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
 }
@@ -321,7 +321,7 @@ InstallSSLCertificate() {
   # Install the Certbot package
   sudo apt-get install -y python-certbot-nginx > $SCRIPT_FOLDER/installer.log 2>&1
   # Generate the SSL certificates
-  echo "$USER_EMAIL a n" | sudo certbot --nginx -d $SITE_DOMAIN -d www.$SITE_DOMAIN > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo certbot --nginx -d $SITE_DOMAIN -d www.$SITE_DOMAIN
 }
 
 
@@ -334,7 +334,7 @@ InstallWordPress() {
   # Delete the WordPress zip file
   sudo rm /home/$USERNAME/wordpress.zip
   # Install the WordPress download
-  sudo mv /home/$USERNAME/wordpress/* /home/$USERNAME/$SITE_DOMAIN/public
+  sudo mv -v /home/$USERNAME/wordpress/* /home/$USERNAME/$SITE_DOMAIN/public > $SCRIPT_FOLDER/installer.log 2>&1
   # Delete the WordPress download directory
   sudo rm -rf /home/$USERNAME/wordpress
   # Configure the WordPress installation
@@ -345,13 +345,13 @@ InstallWordPress() {
 ConfigureWordPress() {
   echo -e "${CLR_YELLOW}> ${CLR_RESET} Configuring the WordPress installation..."
   # Update temp variables in the wp-config file
-  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php
-  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
-  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/wordpress/wp-config.php
-  sudo sed -i "s/%SSH_PASSWORD%/$SSH_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php
-  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php
+  sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%SITE_DOMAIN%/$SITE_DOMAIN/g" $SCRIPT_FOLDER/wordpress/wp-config.php > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%SSH_PASSWORD%/$SSH_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/wordpress/wp-config.php > $SCRIPT_FOLDER/installer.log 2>&1
   # Move the configured wp-config file
-  sudo mv $SCRIPT_FOLDER/wordpress/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
+  sudo mv -v $SCRIPT_FOLDER/wordpress/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php > $SCRIPT_FOLDER/installer.log 2>&1
   # Install default WordPress plugins
   InsallWordPressPlugins
 }
@@ -370,7 +370,7 @@ InsallWordPressPlugins() {
 
 ConfigureCache() {
   # Enable the maxmemory parameter
-  sudo sed -i "s/# maxmemory/maxmemory/g" /etc/redis/redis.conf
+  sudo sed -i "s/# maxmemory/maxmemory/g" /etc/redis/redis.conf > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
