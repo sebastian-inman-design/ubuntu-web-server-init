@@ -17,6 +17,9 @@ CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
 
 Welcome() {
+
+  eclipse > /dev/null
+
   clear
   echo ""
   echo -e "${CLR_RESET}"
@@ -86,12 +89,14 @@ AddSystemUser() {
 
 
 UpdatePackages() {
-  sudo apt update
+  echo "Checking for package updates..."
+  sudo apt-get update > /dev/null
 }
 
 
 InstallUpdates() {
-  sudo apt upgrade -y
+  echo "Installing package updates..."
+  sudo apt-get -y upgrade > /dev/null
 }
 
 
@@ -126,41 +131,42 @@ ConfigureSystem() {
 
 
 InstallDependencies() {
+  echo "Installing system dependencies..."
   # Install the UFW package
-  sudo apt install ufw -y
+  sudo apt-et install -y ufw > /dev/null
   # Install the unzip package
-  sudo apt install unzip -y
+  sudo apt-et install -y unzip > /dev/null
   # Install the Fail2Ban package
-  sudo apt install fail2ban -y
+  sudo apt-et install -y fail2ban > /dev/null
   # Install the libpcre3 package
-  sudo apt install libpcre3 -y
+  sudo apt-et install -y libpcre3 > /dev/null
   # Install the LetsEncrypt package
-  sudo apt install letsencrypt -y
+  sudo apt-et install -y letsencrypt > /dev/null
   # Install Redis cache packages
-  sudo apt install redis-server -y
+  sudo apt-et install -y redis-server > /dev/null
 }
 
 
 ConfigureFirewall() {
   # Allow SSH through firewall
-  sudo ufw allow ssh
+  sudo ufw allow ssh > /dev/null
   # Allow HTTP through firewall
-  sudo ufw allow http
+  sudo ufw allow http > /dev/null
   # Allow HTTPS through firewall
-  sudo ufw allow https
+  sudo ufw allow https > /dev/null
   # Enable the firewall
-  echo "Y" | sudo ufw enable
+  echo "Y" | sudo ufw enable > /dev/null
 }
 
 
 InstallPHP() {
   # Download the most recent PHP repository
-  sudo add-apt-repository ppa:ondrej/php -y
+  sudo add-apt-repository -y ppa:ondrej/php > /dev/null
   # Check for package updates
   UpdatePackages
   # Install PHP and common modules
-  sudo apt install php7.1-fpm php7.1-common php7.1-mysqlnd php7.1-xmlrpc php7.1-curl php-redis -y
-  sudo apt install php7.1-gd php7.1-imagick php7.1-cli php-pear php7.1-dev php7.1-imap php7.1-mcrypt -y
+  sudo apt-get install -y php7.1-fpm php7.1-common php7.1-mysqlnd php7.1-xmlrpc php7.1-curl php-redis > /dev/null
+  sudo apt-get install -y php7.1-gd php7.1-imagick php7.1-cli php-pear php7.1-dev php7.1-imap php7.1-mcrypt > /dev/null
   # Configure the PHP installation
   ConfigurePHP
 }
