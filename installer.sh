@@ -324,7 +324,7 @@ InstallSSLCertificate() {
 
 
 InstallWordPress() {
-  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Downloading and installing the latest WordPress build..."
+  echo -e "${CLR_YELLOW}  > ${CLR_RESET} Downloading and installing WordPress..."
   # Download the latest version of WordPress
   curl -s -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
@@ -400,17 +400,17 @@ StartInstaller() {
 
   echo -e "${CLR_RESET}"
   echo -e "${CLR_GREEN}Completed installation in $(($ELAPSED_TIME/60)) minutes and $(($ELAPSED_TIME%60)) seconds!"
-  echo -e "${CLR_RESET}"
+  echo -e "${CLR_RESET}You can now view the WordPress installation by visiting ${CLR_CYAN}http://$SITE_DOMAIN${CLR_RESET}"
 
   echo "Server IP Address: $IP_ADDRESS" >> $SCRIPT_FOLDER/credentials.log
-  echo ""
+  echo "" >> $SCRIPT_FOLDER/credentials.log
   echo "SSH Username: $USERNAME" >> $SCRIPT_FOLDER/credentials.log
   echo "SSH Password: $SSH_PASSWORD" >> $SCRIPT_FOLDER/credentials.log
   echo "" >> $SCRIPT_FOLDER/credentials.log
   echo "MySQL Username: $USERNAME" >> $SCRIPT_FOLDER/credentials.log
   echo "MySQL Password: $MYSQL_PASSWORD" >> $SCRIPT_FOLDER/credentials.log
 
-  echo "SSH and MySQL credentials have been saved to ${CLR_CYAN}$SCRIPT_FOLDER/credentials.log${CLR_RESET}"
+  echo -e "SSH and MySQL credentials have been saved to ${CLR_CYAN}$SCRIPT_FOLDER/credentials.log${CLR_RESET}"
 
 }
 
