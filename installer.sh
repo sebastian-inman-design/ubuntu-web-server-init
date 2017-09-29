@@ -290,7 +290,7 @@ ConfigureWordPress() {
   # Update temp variables in the wp-config file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wp-config.php
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wp-config.php
-  sudo sed -i "s/%USER_PASSWORD%/$USER_PASSWORD/g" $SCRIPT_FOLDER/wp-config.php
+  sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/wp-config.php
   # Move the configured wp-config file
   sudo mv -v $SCRIPT_FOLDER/wp-config.php /home/$USERNAME/$SITE_DOMAIN/public/wp-config.php
   # Install default WordPress plugins
