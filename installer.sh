@@ -107,8 +107,8 @@ ConfigureSystem() {
   echo $SITE_DOMAIN > /etc/hostname
   hostname -F /etc/hostname
   # Set the servers local timezone to PST
-  echo "America/Los_Angeles" > /etc/timezone
-  dpkg-reconfigure -f noninteractive tzdata > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo rm /etc/localtime
+  sudo ln -s /usr/share/zoneinfo/US/Pacific /etc/localtime
   # Update the current time variable
   CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
   # Check for package updates
