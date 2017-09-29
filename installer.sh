@@ -206,7 +206,7 @@ ConfigureMySQL() {
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
   # Run the installer MySQL query
-  mysql -u root -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
+  mysql -f -s -uroot -p$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
 }
 
 
@@ -360,6 +360,7 @@ RestartServices() {
 
 StartInstaller() {
   sudo touch $SCRIPT_FOLDER/installer.log
+  sudo touch $SCRIPT_FOLDER/credentials.log
   PromptSettings
   ConfigureSystem
   ConfigureWebServer
