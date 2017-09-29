@@ -202,13 +202,13 @@ InstallMySQL() {
 ConfigureMySQL() {
   echo -e "${CLR_YELLOW}[ * ]${CLR_RESET} Configuring MySQL databases..."
   # Configure the local MySQL configuration
-  mysql_config_editor set --login-path=local --host=localhost --user=$USERNAME --password=$MYSQL_PASSWORD
+  mysql_config_editor set --login-path=local --host=localhost --user=$USERNAME --password
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%MYSQL_PASSWORD%/$MYSQL_PASSWORD/g" $SCRIPT_FOLDER/databases/installer.sql
   # Run the installer MySQL query
-  mysql --login-path=local < $SCRIPT_FOLDER/databases/installer.sql
+  mysql --login-path=local --password=$MYSQL_PASSWORD < $SCRIPT_FOLDER/databases/installer.sql
 }
 
 
@@ -376,10 +376,10 @@ StartInstaller() {
   RestartServices
 
   FINISH_TIME="$(date -u +%s)"
-  ELAPSED_TIME="$(bc <<< "$FINISH_TIME-$START_TIME")"
+  ELAPSED_TIME="$(($FINISH_TIME-$START_TIME))"
 
   echo ""
-  echo -e "${CLR_GREEN}Installation finished in $(($ELAPSED_TIME / 60)) minutes and $(($ELAPSED_TIME % 60)) seconds!"
+  echo -e "${CLR_GREEN}Installation finished in $(($ELAPSED_TIME/60)) minutes and $(($ELAPSED_TIME%60)) seconds!"
   echo -e "${CLR_RESET}Your server password is:${CLR_CYAN} $USER_PASSWORD"
   echo -e "${CLR_RESET}Your MySQL password is:${CLR_CYAN} $MYSQL_PASSWORD"
   echo ""
