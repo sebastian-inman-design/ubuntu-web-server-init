@@ -81,7 +81,7 @@ PromptSettings() {
 
 
 AddSystemUser() {
-  echo "Creating new user '$USERNAME'..."
+  echo "[*] Creating new user '$USERNAME'..."
   sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > $SCRIPT_FOLDER/installer.log 2>&1
   echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > $SCRIPT_FOLDER/installer.log 2>&1
   sudo usermod -aG sudo $USERNAME > $SCRIPT_FOLDER/installer.log 2>&1
@@ -91,14 +91,14 @@ AddSystemUser() {
 
 
 UpdatePackages() {
-  echo "Checking for package updates..."
+  echo "[*] Checking for package updates..."
   sudo apt-get update > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
 InstallUpdates() {
   echo "[SKIPPED] Installing package updates..."
-  # TODO sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
+  sudo apt-get -y upgrade > $SCRIPT_FOLDER/installer.log 2>&1
 }
 
 
@@ -133,7 +133,7 @@ ConfigureSystem() {
 
 
 InstallDependencies() {
-  echo "Installing system dependencies..."
+  echo "[*] Installing package dependencies..."
   # Install the UFW package
   sudo apt-get install -y ufw > $SCRIPT_FOLDER/installer.log 2>&1
   # Install the unzip package
@@ -150,7 +150,7 @@ InstallDependencies() {
 
 
 ConfigureFirewall() {
-  echo "Configuring firewall..."
+  echo "[*] Configuring firewall..."
   # Allow SSH through firewall
   sudo ufw allow ssh > $SCRIPT_FOLDER/installer.log 2>&1
   # Allow HTTP through firewall
@@ -163,7 +163,7 @@ ConfigureFirewall() {
 
 
 InstallPHP() {
-  echo "Installing PHP with core modules..."
+  echo "[*] Installing PHP with core modules..."
   # Download the most recent PHP repository
   sudo add-apt-repository -y ppa:ondrej/php > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
@@ -188,7 +188,7 @@ ConfigurePHP() {
 
 
 InstallMySQL() {
-  echo "Installing MySQL..."
+  echo "[*] Installing MySQL..."
   # Check for package updates
   UpdatePackages
   # Configure the MySQL username and password
@@ -202,7 +202,7 @@ InstallMySQL() {
 
 
 ConfigureMySQL() {
-  echo "Configuring MySQL databases..."
+  echo "[*] Configuring MySQL databases..."
   # Update temp variables in the installer MySQL file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/databases/installer.sql
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/databases/installer.sql
@@ -219,7 +219,7 @@ RestartPHPService() {
 
 
 InstallNginx() {
-  echo "Installing the Nginx server..."
+  echo "[*] Installing the Nginx server..."
   # Download the most recent Nginx repository
   sudo add-apt-repository -y ppa:nginx/development > $SCRIPT_FOLDER/installer.log 2>&1
   # Check for package updates
@@ -232,7 +232,7 @@ InstallNginx() {
 
 
 ConfigureNginx() {
-  echo "Configuring the Nginx server to host $SITE_DOMAIN..."
+  echo "[*] Configuring the Nginx server to host $SITE_DOMAIN..."
   # Enable the PHP script module in Nginx
   sudo echo 'fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params
   # Backup the original Nginx config file
@@ -243,8 +243,6 @@ ConfigureNginx() {
   sudo mv $SCRIPT_FOLDER/nginx/nginx.conf /etc/nginx/nginx.conf
   # Configure the server block
   ConfigureServerBlock
-  # Restart the Nginx web server
-  RestartNginxService
 }
 
 
@@ -255,7 +253,7 @@ RestartNginxService() {
 
 
 ConfigureWebServer() {
-  echo "Configuring the $SITE_DOMAIN server block..."
+  echo "[*] Configuring the $SITE_DOMAIN server block..."
   # Create web server directories
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/backups
   sudo mkdir -p /home/$USERNAME/$SITE_DOMAIN/public
@@ -271,6 +269,8 @@ ConfigureWebServer() {
   sudo chmod -R 755 /home/$USERNAME/$SITE_DOMAIN
   sudo chown -R $USERNAME:$USERNAME /run/php
   sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/$SITE_DOMAIN
+  # Restart the Nginx web server
+  RestartNginxService
   # Install WordPress into the public web directory
   InstallWordPress
 }
@@ -308,7 +308,7 @@ InstallSSLCertificate() {
 
 
 InstallWordPress() {
-  echo "Downloading and installing the latest WordPress build..."
+  echo "[*] Downloading and installing the latest WordPress build..."
   # Download the latest version of WordPress
   curl -s -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
@@ -325,7 +325,7 @@ InstallWordPress() {
 
 
 ConfigureWordPress() {
-  echo "Configuring the WordPress installation..."
+  echo "[*] Configuring the WordPress installation..."
   # Update temp variables in the wp-config file
   sudo sed -i "s/%DATABASE%/$DATABASE/g" $SCRIPT_FOLDER/wordpress/wp-config.php
   sudo sed -i "s/%USERNAME%/$USERNAME/g" $SCRIPT_FOLDER/wordpress/wp-config.php
@@ -338,7 +338,7 @@ ConfigureWordPress() {
 
 
 InsallWordPressPlugins() {
-  echo "Installing default WordPress plugins..."
+  echo "[*] Installing WordPress plugins..."
   # Delete any existing WordPress plugins
   sudo rm -r /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/*
   # Install default WordPress plugins
@@ -366,9 +366,11 @@ StartInstaller() {
   ConfigureSystem
   ConfigureWebServer
   ConfigureCache
+  echo ""
   echo "Installation complete!"
   echo "Your server password is: $USER_PASSWORD"
   echo "Your MySQL password is: $MYSQL_PASSWORD"
+  echo ""
 }
 
 Welcome
