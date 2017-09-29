@@ -363,8 +363,7 @@ RestartServices() {
 
 StartInstaller() {
 
-  SECONDS=0
-  DURATION=$SECONDS
+  START_TIME="$(date -u +%s)"
 
   sudo touch $SCRIPT_FOLDER/installer.log
   sudo touch $SCRIPT_FOLDER/credentials.log
@@ -376,8 +375,11 @@ StartInstaller() {
   InstallUpdates
   RestartServices
 
+  FINISH_TIME="$(date -u +%s)"
+  ELAPSED_TIME="$(bc <<< "$FINISH_TIME-$START_TIME")"
+
   echo ""
-  echo -e "${CLR_GREEN}Installation finished in $(($DURATION / 60)) minutes and $(($DURATION % 60)) seconds!"
+  echo -e "${CLR_GREEN}Installation finished in $(($ELAPSED_TIME / 60)) minutes and $(($ELAPSED_TIME % 60)) seconds!"
   echo -e "${CLR_RESET}Your server password is:${CLR_CYAN} $USER_PASSWORD"
   echo -e "${CLR_RESET}Your MySQL password is:${CLR_CYAN} $MYSQL_PASSWORD"
   echo ""
