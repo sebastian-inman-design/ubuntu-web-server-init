@@ -144,8 +144,6 @@ ConfigureSystem() {
   InstallNginx
   # Install and configure MySQL
   InstallMySQL
-  # Configure the firewall
-  ConfigureFirewall
 }
 
 
@@ -321,7 +319,7 @@ InstallSSLCertificate() {
   # Install the Certbot package
   sudo apt-get install -y python-certbot-nginx > $SCRIPT_FOLDER/installer.log 2>&1
   # Generate the SSL certificates
-  sudo certbot certonly --webroot --webroot-path=/home/$USERNAME/$SITE_DOMAIN/public -d $SITE_DOMAIN -d www.$SITE_DOMAIN
+  sudo certbot certonly --webroot -w /home/$USERNAME/$SITE_DOMAIN/public -d $SITE_DOMAIN -d www.$SITE_DOMAIN
 }
 
 
@@ -396,6 +394,7 @@ StartInstaller() {
   ConfigureSystem
   ConfigureWebServer
   ConfigureCache
+  ConfigureFirewall
   InstallUpdates
   InstallSSLCertificate
   RestartServices
