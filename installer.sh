@@ -8,7 +8,7 @@ SCRIPT_FOLDER=$(dirname "$SCRIPT_FILE")
 source $SCRIPT_FOLDER/config
 
 # Make random user and MySQL passwords
-USER_PASSWORD=$(openssl rand -base64 12)
+SSH_PASSWORD=$(openssl rand -base64 12)
 MYSQL_PASSWORD=$(openssl rand -base64 12)
 
 # Fetch IP address and local time
@@ -46,8 +46,8 @@ Welcome() {
   echo -e "${CLR_RED}           MMMMMMMM  MMMMMMMMMM     ${CLR_RESET}By Sebastian Inman ${CLR_CYAN}sebastian.inman@highwayproducts.com"
   echo -e "${CLR_RED}          MMMMMMMMM  MMMMMMMMMM"
   echo -e "${CLR_RED}        MMMMMMMMMM  MMMMMMMMMMM     ${CLR_RESET}This script automatically installs and configures"
-  echo -e "${CLR_RED}       MMMMMMMMMM   MMMMMMMMMMM     ${CLR_RESET}a fast and secure Nginx web server with the latest"
-  echo -e "${CLR_RED}    MMMMMMMMMMMM   MMMMMMMMMMMM     ${CLR_RESET}build of WordPress."
+  echo -e "${CLR_RED}       MMMMMMMMMM   MMMMMMMMMMM     ${CLR_RESET}a fast and secure Nginx web server with a fresh"
+  echo -e "${CLR_RED}    MMMMMMMMMMMM   MMMMMMMMMMMM     ${CLR_RESET}install of the latest build of WordPress."
   echo -e "${CLR_RED}  MMMMMMMMMMMMM   MMMMMMMMMMMM"
   echo -e "${CLR_RED}MMMMMMMMMMMMMM   MMMMMMMMMMMMM"
   echo -e "${CLR_RESET}"
@@ -75,8 +75,8 @@ PromptSettings() {
   # Prompt user for their password
   if [[ SECURE_INSTALL = "false" ]]; then
     read -p "Enter your password: " PROMPT_PASSWORD
-    USER_PASSWORD=$PROMPT_PASSWORD
-    MYSQL_PASSWORD=$USER_PASSWORD
+    SSH_PASSWORD=$PROMPT_PASSWORD
+    MYSQL_PASSWORD=$SSH_PASSWORD
   fi
   # Prompt user for the servers domain name
   read -p "Enter the domain for this server: " PROMPT_DOMAIN
@@ -100,7 +100,7 @@ PromptSettings() {
 AddSystemUser() {
   echo -e "${CLR_YELLOW}  > ${CLR_RESET} Creating new user '$USERNAME'..."
   sudo adduser $USERNAME --gecos "$REAL_NAME,,," --disabled-password > $SCRIPT_FOLDER/installer.log 2>&1
-  echo "$USERNAME:$USER_PASSWORD" | sudo chpasswd > $SCRIPT_FOLDER/installer.log 2>&1
+  echo "$USERNAME:$SSH_PASSWORD" | sudo chpasswd > $SCRIPT_FOLDER/installer.log 2>&1
   sudo usermod -aG sudo $USERNAME > $SCRIPT_FOLDER/installer.log 2>&1
   sudo mkdir -p /home/$USERNAME
   sudo chown -R $USERNAME:$USERNAME /home/$USERNAME
@@ -401,9 +401,14 @@ StartInstaller() {
   echo -e "${CLR_RESET}"
   echo -e "${CLR_GREEN}Completed installation in $(($ELAPSED_TIME/60)) minutes and $(($ELAPSED_TIME%60)) seconds!"
   echo -e "${CLR_RESET}"
-  echo -e "${CLR_RESET}Your server password is: ${CLR_CYAN}$USER_PASSWORD"
-  echo -e "${CLR_RESET}Your MySQL password is: ${CLR_CYAN}$MYSQL_PASSWORD"
-  echo -e "${CLR_RESET}"
+
+  echo "SSH Username: $USERNAME" >> $SCRIPT_FOLDER/credentials.log
+  echo "SSH Password: $SSH_PASSWORD" >> $SCRIPT_FOLDER/credentials.log
+  echo "" >> $SCRIPT_FOLDER/credentials.log
+  echo "MySQL Username: $USERNAME" >> $SCRIPT_FOLDER/credentials.log
+  echo "MySQL Password: $MYSQL_PASSWORD" >> $SCRIPT_FOLDER/credentials.log
+
+  echo "SSH and MySQL credentials have been saved to ${CLR_CYAN}$SCRIPT_FOLDER/credentials.log${CLR_RESET}"
 
 }
 
