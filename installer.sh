@@ -225,9 +225,10 @@ ConfigureMySQL() {
   # Update temp variables in the .my.cnf file
   sudo sed -i "s/%PASSWORD%/$PASSWORD/g" $SCRIPT_FOLDER/mysql/.my.cnf
   # Move the .my.cnf file into the etc directory
-  sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /home/$USERNAME/my.cnf
+  sudo mv $SCRIPT_FOLDER/mysql/.my.cnf /home/$USERNAME/.my.cnf
+  sudo chmod 600 /home/$USERNAME/.my.cnf
   # Run the installer MySQL query
-  mysql --defaults-extra-file=/home/$USERNAME/my.cnf < "$SCRIPT_FOLDER/mysql/installer.sql"
+  mysql --defaults-extra-file=/home/$USERNAME/.my.cnf < "$SCRIPT_FOLDER/mysql/installer.sql"
 }
 
 
