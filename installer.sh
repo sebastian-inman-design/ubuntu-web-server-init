@@ -35,6 +35,7 @@ Welcome() {
   echo -e "${CLR_YELLOW}    EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
   echo -e "${CLR_RESET}"
   echo ""
+  echo ""
 
   read -n 1 -s -r -p "Press any key to begin the installation process..."
   echo ""
@@ -311,7 +312,7 @@ InstallWordPress() {
   # Download the latest version of WordPress
   curl -s -o /home/$USERNAME/wordpress.zip https://wordpress.org/latest.zip
   # Unzip the WordPress download
-  unzip /home/$USERNAME/wordpress.zip -d /home/$USERNAME
+  unzip -qq /home/$USERNAME/wordpress.zip -d /home/$USERNAME
   # Delete the WordPress zip file
   sudo rm /home/$USERNAME/wordpress.zip
   # Install the WordPress download
@@ -340,7 +341,7 @@ InsallWordPressPlugins() {
   sudo rm -r /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/*
   # Install default WordPress plugins
   for plugin in $SCRIPT_FOLDER/wordpress/wp-plugins/*.zip; do
-    unzip "$plugin" -d /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/
+    unzip -qq "$plugin" -d /home/$USERNAME/$SITE_DOMAIN/public/wp-content/plugins/
   done
 }
 
