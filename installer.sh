@@ -17,47 +17,13 @@ CURRENT_DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
 
 Welcome() {
-
-  eclipse >> $SCRIPT_FOLDER/installer.log 2>&1
-
   clear
-
-  echo ""
-  echo -e "${CLR_RESET}"
-  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}Seeds Creative Services WordPress Installer"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}Made by Sebastian Inman ${CLR_CYAN}sebastian@seedscs.com"
-  echo -e "${CLR_YELLOW}EEEEEEEEEEEE              EEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}EEEEEEEEEEEE              EEEEEEEEEEEE    ${CLR_RESET}This script automatically installs and configures"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}a fast and secure Nginx web server with the latest"
-  echo -e "${CLR_YELLOW}EEEE                              EEEE    ${CLR_RESET}build of WordPress."
-  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEE"
-  echo -e "${CLR_YELLOW}EEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEEEEEEE"
-  echo -e "${CLR_RESET}"
-  echo ""
-  echo ""
-
-  # echo ""
-  # echo -e "${CLR_RESET}"
-  # echo -e "${CLR_RED}          MMMMMMM   MMMMMMMMMM"
-  # echo -e "${CLR_RED}           MMMMMMM   MMMMMMMMMM"
-  # echo -e "${CLR_RED}           MMMMMMMM   MMMMMMMMM      ${CLR_RESET}Highway Products, Inc. WordPress Installer"
-  # echo -e "${CLR_RED}           MMMMMMMM   MMMMMMMMMM     ${CLR_RESET}By Sebastian Inman ${CLR_CYAN}sebastian.inman@highwayproducts.com"
-  # echo -e "${CLR_RED}          MMMMMMMMM   MMMMMMMMMM"
-  # echo -e "${CLR_RED}        MMMMMMMMMM   MMMMMMMMMMM     ${CLR_RESET}This script automatically installs and configures"
-  # echo -e "${CLR_RED}       MMMMMMMMMM    MMMMMMMMMMM     ${CLR_RESET}a fast and secure Nginx web server with a fresh"
-  # echo -e "${CLR_RED}    MMMMMMMMMMMM    MMMMMMMMMMMM     ${CLR_RESET}install of the latest build of WordPress."
-  # echo -e "${CLR_RED}  MMMMMMMMMMMMM    MMMMMMMMMMMM"
-  # echo -e "${CLR_RED}MMMMMMMMMMMMMM    MMMMMMMMMMMMM"
-  # echo -e "${CLR_RESET}"
-  # echo ""
-  # echo ""
-
+  eclipse >> $SCRIPT_FOLDER/installer.log 2>&1
+  # Display the welcome message
+  source $SCRIPT_FOLDER/message.sh
+  # Prompt user to start the installation
   read -n 1 -s -r -p "Press any key to begin the installation process..."
-  echo ""
   StartInstaller
-
 }
 
 
@@ -317,7 +283,7 @@ InstallSSLCertificate() {
   # Install the Certbot package
   sudo apt-get install -y python-certbot-nginx >> $SCRIPT_FOLDER/installer.log 2>&1
   # Generate the SSL certificates
-  sudo certbot certonly --webroot -w /home/$USERNAME/$SITE_DOMAIN/public/ -d $SITE_DOMAIN
+  echo "$USER_EMAIL" | sudo certbot certonly --standalone --preferred-challenges http -d $SITE_DOMAIN
 }
 
 
@@ -382,12 +348,11 @@ RestartServices() {
 
 
 StartInstaller() {
-
+  echo ""
   START_TIME="$(date -u +%s)"
-
+  # Create empty log output files
   sudo touch $SCRIPT_FOLDER/installer.log
   sudo touch $SCRIPT_FOLDER/credentials.log
-
   # Prompt user input
   PromptSettings
   # Initial server configuration
@@ -401,7 +366,7 @@ StartInstaller() {
   # Install package updates
   InstallUpdates
   # Install a self-signed SSL certificate (if domain is set)
-  # if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
+  if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
   # Restart system services
   RestartServices
 
