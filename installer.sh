@@ -401,7 +401,7 @@ StartInstaller() {
   # Install package updates
   InstallUpdates
   # Install a self-signed SSL certificate (if domain is set)
-  if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
+  # if [[ $ISSET_DOMAIN = "true" ]]; then InstallSSLCertificate; fi
   # Restart system services
   RestartServices
 
